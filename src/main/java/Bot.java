@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
+import java.io.File;
 
 @Slf4j
 public class Bot extends ListenerAdapter {
@@ -40,11 +41,44 @@ public class Bot extends ListenerAdapter {
 
         Message message = event.getMessage();
         String content = message.getContentRaw();
+        String state = "";
+        MessageChannel channel = event.getChannel();
 
-        if (message.getContentRaw().equals("!helloThere")) {
+        switch(content)
+        {
+            case("!helloThere"):
+            {
 
-            MessageChannel channel = event.getChannel();
-            channel.sendMessage("General Kenoby!").queue();
+                channel.sendMessage("General Kenoby!").queue();
+                break;
+            }
+            case("!startBuzzer"):
+            {
+                //select if with or without buzzer sound.
+                channel.sendMessage("stated Buzzering").queue();
+                state="buzzering";
+                break;
+            }
+            case("!Buzz"):
+            {
+                if(state=="buzzering")
+                {
+                    state="";
+
+                    channel.sendMessage(event.getAuthor()+"was first to buzzer").queue();
+                    //play buzzer sound.
+                }
+                break;
+            }
+            case("plotDiagram"):
+            {
+                //make a Diagram with colectet data: 1.Abstimmung per reactions 2.Annonyme Abstimmung (realisirung noch unklar)
+
+                //send the Diagram
+                File file = new File("C:/test");
+                channel.sendFile(file).queue();
+            }
         }
+
     }
 }
