@@ -10,13 +10,23 @@ repositories {
 }
 
 dependencies {
+    //Lombok
     implementation 'org.projectlombok:lombok:1.18.16'
-    compile 'net.dv8tion:JDA:4.2.0_222'
-    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
     compileOnly 'org.projectlombok:lombok:1.18.12'
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
+
+    //JDA
+    compile 'net.dv8tion:JDA:4.2.0_222'
+
+    //Slf4j
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
+
+    //JUnit
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+
+    //LavaPlayer
+    implementation 'com.sedmelluq:lavaplayer:1.3.63'
 }
 
 test {
