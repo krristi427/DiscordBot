@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,14 +18,14 @@ import java.io.File;
 public class Bot extends ListenerAdapter {
 
     public static void main(String[] args) throws LoginException {
-        JDABuilder jdaBuilder = JDABuilder.createDefault("Nzg2MTQ1NTI0ODA5NzI4MDAw.X9CJEg.wIPiTL_HImLtsY3QKByTeuiA_Ps");
+        JDABuilder jdaBuilder = JDABuilder.createDefault("");
 
         JDA build = jdaBuilder.build();
         build.addEventListener(new Bot());
     }
 
     @Override
-    public void onMessageReceived(MessageReceivedEvent event) {
+    public void onMessageReceived(@NotNull MessageReceivedEvent event) {
         try{
             log.info("Received message with text: {}", event.getMessage().getContentRaw());
             handleMessage(event);
@@ -44,41 +45,33 @@ public class Bot extends ListenerAdapter {
         String state = "";
         MessageChannel channel = event.getChannel();
 
-        switch(content)
-        {
-            case("!helloThere"):
-            {
+        switch(content) {
+            case("!helloThere"): {
 
                 channel.sendMessage("General Kenoby!").queue();
                 break;
             }
-            case("!startBuzzer"):
-            {
+            case("!startBuzzer"): {
                 //select if with or without buzzer sound.
                 channel.sendMessage("stated Buzzering").queue();
                 state="buzzering";
                 break;
             }
-            case("!Buzz"):
-            {
-                if(state=="buzzering")
-                {
+            case("!Buzz"): {
+                if(state.equals("buzzering")) {
                     state="";
-
                     channel.sendMessage(event.getAuthor()+"was first to buzzer").queue();
                     //play buzzer sound.
                 }
                 break;
             }
-            case("plotDiagram"):
-            {
-                //make a Diagram with colectet data: 1.Abstimmung per reactions 2.Annonyme Abstimmung (realisirung noch unklar)
+            case("!plotDiagram"): {
+                //make a Diagram with collected data: 1.Abstimmung per reactions 2.Annonyme Abstimmung (realisirung noch unklar)
 
                 //send the Diagram
                 File file = new File("C:/test");
                 channel.sendFile(file).queue();
             }
         }
-
     }
 }
