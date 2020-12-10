@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import services.GreetingService;
 
 import javax.imageio.ImageIO;
 import javax.security.auth.login.LoginException;
@@ -20,7 +21,7 @@ import java.util.Locale;
 public class Bot extends ListenerAdapter {
 
     public static void main(String[] args) throws LoginException {
-        JDABuilder jdaBuilder = JDABuilder.createDefault("Nzg2MTQ1NTI0ODA5NzI4MDAw.X9CJEg.wIPiTL_HImLtsY3QKByTeuiA_Ps");
+        JDABuilder jdaBuilder = JDABuilder.createDefault("");
 
         JDA build = jdaBuilder.build();
         build.addEventListener(new Bot());
@@ -34,70 +35,23 @@ public class Bot extends ListenerAdapter {
         }catch (Exception e){
             log.warn("Could not process message", e);
             event.getMessage().getChannel().sendMessage("Unexpected error occurred!").queue();
-
+            e.printStackTrace();
         }
     }
-    private enum States{EMPTY,BUZZIG};
-    private States state = States.EMPTY;
+
     private void handleMessage(MessageReceivedEvent event) {
 
         if (event.getAuthor().isBot()) return;
 
         Message message = event.getMessage();
-        String[] content = message.getContentRaw().split(" ");
-        String command = content[0];
-        state = state.EMPTY;
-        MessageChannel channel = event.getChannel();
-        String prefix ="!";
+        String contentRaw = message.getContentRaw();
 
-        if (command.startsWith(prefix)) {
-            command = command.toLowerCase(Locale.ROOT).replace(prefix, "");
+        if (contentRaw.contains("!helloThere")) {
+            GreetingService.getInstance().greetRequired(event.getChannel());
 
-            switch (command) {
-                case("help"):
-                {
-                    channel.sendMessage("some helpy stuff").queue();
-                }
-                case ("helloThere"): {
-
-                    channel.sendMessage("General Kenoby!").queue();
-                    break;
-                }
-                case ("startBuzzer"): {
-                    //select if with or without buzzer sound.
-                    channel.sendMessage("stated Buzzering").queue();
-                    state = States.BUZZIG;
-                    break;
-                }
-                case ("buzz"): {
-                    if (state == States.BUZZIG) {
-                        state = States.EMPTY;
-
-                        channel.sendMessage(event.getAuthor() + "was first to buzzer").queue();
-                        //play buzzer sound.
-                    }
-                    break;
-                }
-                case ("chanceprefix"): {
-                    prefix=content[1];
-                    break;
-                }
-                case ("plotdiagram"): {
-                    //make a Diagram with colectet data: 1.Abstimmung per reactions 2.Annonyme Abstimmung (realisirung noch unklar)
-                    try {
-                        Process p = Runtime.getRuntime().exec("python ../python/plotter.py");
-                    } catch (IOException e) {
-                        log.error("IOExeption: " + e);
-                    }
-                    //send the Diagram
-                    File file = new File("./dataoutput");
-                    channel.sendFile(file).queue();
-                }
-                default:
-                    channel.sendMessage("Invalid command, type "+prefix+"help for help").queue();
-            }
+        } else if (contentRaw.contains("!createGreeting")) {
+            GreetingService.getInstance().createGreeting(event.getMessage());
         }
-
 
     }
 }
