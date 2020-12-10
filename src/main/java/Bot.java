@@ -20,14 +20,14 @@ import java.util.Locale;
 public class Bot extends ListenerAdapter {
 
     public static void main(String[] args) throws LoginException {
-        JDABuilder jdaBuilder = JDABuilder.createDefault("");
+        JDABuilder jdaBuilder = JDABuilder.createDefault("Nzg2MTQ1NTI0ODA5NzI4MDAw.X9CJEg.wIPiTL_HImLtsY3QKByTeuiA_Ps");
 
         JDA build = jdaBuilder.build();
         build.addEventListener(new Bot());
     }
 
     @Override
-    public void onMessageReceived(@NotNull MessageReceivedEvent event) {
+    public void onMessageReceived(MessageReceivedEvent event) {
         try{
             log.info("Received message with text: {}", event.getMessage().getContentRaw());
             handleMessage(event);
@@ -50,41 +50,54 @@ public class Bot extends ListenerAdapter {
         MessageChannel channel = event.getChannel();
         String prefix ="!";
 
-        switch(content)
-        {
-            case("!helloThere"):
-            {
+        if (command.startsWith(prefix)) {
+            command = command.toLowerCase(Locale.ROOT).replace(prefix, "");
 
-                channel.sendMessage("General Kenoby!").queue();
-                break;
-            }
-            case("!startBuzzer"):
-            {
-                //select if with or without buzzer sound.
-                channel.sendMessage("stated Buzzering").queue();
-                state="buzzering";
-                break;
-            }
-            case("!Buzz"):
-            {
-                if(state=="buzzering")
+            switch (command) {
+                case("help"):
                 {
-                    state="";
-
-                    channel.sendMessage(event.getAuthor()+"was first to buzzer").queue();
-                    //play buzzer sound.
+                    channel.sendMessage("some helpy stuff").queue();
                 }
-                break;
-            }
-            case("plotDiagram"):
-            {
-                //make a Diagram with colectet data: 1.Abstimmung per reactions 2.Annonyme Abstimmung (realisirung noch unklar)
+                case ("helloThere"): {
 
-                //send the Diagram
-                File file = new File("C:/test");
-                channel.sendFile(file).queue();
+                    channel.sendMessage("General Kenoby!").queue();
+                    break;
+                }
+                case ("startBuzzer"): {
+                    //select if with or without buzzer sound.
+                    channel.sendMessage("stated Buzzering").queue();
+                    state = States.BUZZIG;
+                    break;
+                }
+                case ("buzz"): {
+                    if (state == States.BUZZIG) {
+                        state = States.EMPTY;
+
+                        channel.sendMessage(event.getAuthor() + "was first to buzzer").queue();
+                        //play buzzer sound.
+                    }
+                    break;
+                }
+                case ("chanceprefix"): {
+                    prefix=content[1];
+                    break;
+                }
+                case ("plotdiagram"): {
+                    //make a Diagram with colectet data: 1.Abstimmung per reactions 2.Annonyme Abstimmung (realisirung noch unklar)
+                    try {
+                        Process p = Runtime.getRuntime().exec("python ../python/plotter.py");
+                    } catch (IOException e) {
+                        log.error("IOExeption: " + e);
+                    }
+                    //send the Diagram
+                    File file = new File("./dataoutput");
+                    channel.sendFile(file).queue();
+                }
+                default:
+                    channel.sendMessage("Invalid command, type "+prefix+"help for help").queue();
             }
         }
+
 
     }
 }
