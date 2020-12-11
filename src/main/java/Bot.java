@@ -4,9 +4,11 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import services.CommandsService;
 import services.GreetingService;
+import services.Sound;
 
 import javax.imageio.ImageIO;
 import javax.security.auth.login.LoginException;
@@ -18,6 +20,8 @@ import java.util.Locale;
 
 @Slf4j
 public class Bot extends ListenerAdapter {
+
+    //TODO find a way to silence the handleMessage Method while requesting to play music
 
     private enum States{EMPTY,BUZZIG};
 
@@ -42,6 +46,39 @@ public class Bot extends ListenerAdapter {
             log.warn("Could not process message", e);
             event.getMessage().getChannel().sendMessage("Unexpected error occurred!").queue();
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
+
+        try{
+            log.info("Received message with text: {}", event.getMessage().getContentRaw());
+            handleGuildMessage(event);
+
+        } catch (Exception e){
+            log.warn("Could not process message", e);
+            event.getMessage().getChannel().sendMessage("Unexpected error occurred!").queue();
+            e.printStackTrace();
+        }
+    }
+
+    private void handleGuildMessage(GuildMessageReceivedEvent event) {
+
+        String[] command = event.getMessage().getContentRaw().split(" ");
+        prefix = "!";
+        if (command[0].startsWith(prefix)){
+
+            switch (command[0]) {
+                case("!play"): {
+                    Sound.getInstance().loadAndPlay(event.getChannel(), command[1]);
+                }
+
+                case("!skip"): {
+                    Sound.getInstance().skipTrack(event.getChannel());
+                }
+            }
+            super.onGuildMessageReceived(event);
         }
     }
 

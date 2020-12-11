@@ -12,6 +12,15 @@ services/CommandsStorageService.java
  services.CommandsStorageService$1
 services/CommandsService.java
  services.CommandsService
+services/AudioPlayerSendHandler.java
+ services.AudioPlayerSendHandler
 Bot.java
  Bot
  Bot$States
+services/TrackScheduler.java
+ services.TrackScheduler
+services/GuildMusicManager.java
+ services.GuildMusicManager
+services/Sound.java
+ services.Sound
+ services.Sound$1
