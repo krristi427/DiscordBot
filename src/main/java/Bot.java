@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import services.CommandsService;
 import services.GreetingService;
 
 import javax.imageio.ImageIO;
@@ -36,7 +37,8 @@ public class Bot extends ListenerAdapter {
         try{
             log.info("Received message with text: {}", event.getMessage().getContentRaw());
             handleMessage(event);
-        }catch (Exception e){
+
+        } catch (Exception e){
             log.warn("Could not process message", e);
             event.getMessage().getChannel().sendMessage("Unexpected error occurred!").queue();
             e.printStackTrace();
@@ -52,16 +54,14 @@ public class Bot extends ListenerAdapter {
         state = state.EMPTY;
         String[] content = message.getContentRaw().split(" ");
         String command = content[0];
-        prefix="!";
+        prefix = "!";
 
         if(command.startsWith(prefix)) {
             command = command.toLowerCase(Locale.ROOT).replace(prefix, "");
 
             switch (command) {
-
-
                 case ("help"): {
-                    channel.sendMessage("Some Helpy Stuff").queue();
+                    CommandsService.getInstance().helpRequired(channel);
                     break;
                 }
 
@@ -118,7 +118,7 @@ public class Bot extends ListenerAdapter {
                     g2d.dispose();
 
                     // Save as PNG
-                    File file = new File("src/main/misc/dataoutput.png");
+                    File file = new File("src/main/resources/misc/dataoutput.png");
 
                     try {
                         ImageIO.write(bufferedImage, "png", file);
@@ -151,7 +151,7 @@ public class Bot extends ListenerAdapter {
 
                     //send the Diagram
                     try {
-                        File file = new File("src/main/misc/dataoutput.png");
+                        File file = new File("src/main/resources/misc/dataoutput.png");
                         channel.sendFile(file).queue();
 
                     } catch (Exception e) {
