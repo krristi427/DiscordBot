@@ -1,3 +1,10 @@
+dataObjects/Greeting.java
+ dataObjects.Greeting
+services/GreetingsStorageService.java
+ services.GreetingsStorageService
+ services.GreetingsStorageService$1
+services/GreetingService.java
+ services.GreetingService
 Bot.java
  Bot
  Bot$States

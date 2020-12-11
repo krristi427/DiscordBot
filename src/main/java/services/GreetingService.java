@@ -30,12 +30,15 @@ public class GreetingService {
         return actualGreets.get(random.nextInt(actualGreets.size()));
     }
 
-    public void createGreeting(Message message) {
+    public void createGreeting(Message message, MessageChannel messageChannel) {
 
         String greetingTextFromRaw = message.getContentRaw().substring(16);
         Greeting greeting = new Greeting(greetingTextFromRaw);
         GreetingsStorageService greetingsStorageService = GreetingsStorageService.getInstance();
         greetingsStorageService.getGreetingList().add(greeting);
         greetingsStorageService.storeQuestions();
+
+        messageChannel.sendMessage("Created new Greeting: "
+                                        + greetingTextFromRaw + ". To see it, just ask hello again").queue();
     }
 }
