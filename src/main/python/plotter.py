@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
+
 if __name__ == '__main__':
     bar_names = []
     bar_heights = []
-
     textfile = open("src/main/resources/misc/data.txt", "r")
 
     for line in textfile:

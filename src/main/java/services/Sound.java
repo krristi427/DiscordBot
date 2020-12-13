@@ -95,7 +95,7 @@ public class Sound {
     }
 
     private static void connectToFirstVoiceChannel(AudioManager audioManager) {
-        if (!audioManager.isConnected() && !audioManager.isConnected()) {
+        if (!audioManager.isConnected() && !audioManager.isConnected()) { //TODO think about this statement
             for (VoiceChannel voiceChannel : audioManager.getGuild().getVoiceChannels()) {
                 audioManager.openAudioConnection(voiceChannel);
                 break;

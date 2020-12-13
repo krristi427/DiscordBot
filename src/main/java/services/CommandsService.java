@@ -15,13 +15,15 @@ public class CommandsService {
 
     public void helpRequired(MessageChannel channel) {
 
+            String buffer = "";
         List<Command> commands = CommandsStorageService.getInstance().getCommands();
-        commands.forEach(command -> {
+        for (Command command : commands) {
             String name = command.getName();
             String explanation = command.getExplanation();
 
-            channel.sendMessage(name + ": " + explanation).queue();
-        });
+            buffer += (name + ": " + explanation+"\n");
+        }
+        channel.sendMessage(buffer).queue(); //restructured to send all heps at once
     }
 
     //TODO add a master-command to add a new command to the list

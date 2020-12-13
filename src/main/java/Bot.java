@@ -88,7 +88,6 @@ public class Bot extends ListenerAdapter {
 
         Message message = event.getMessage();
         MessageChannel channel = event.getChannel();
-        state = state.EMPTY;
         String[] content = message.getContentRaw().split(" ");
         String command = content[0];
         prefix = "!";
@@ -124,6 +123,10 @@ public class Bot extends ListenerAdapter {
                         state = States.EMPTY;
                         channel.sendMessage(event.getAuthor().getName() + " was first to buzzer! ").queue();
                         //TODO play buzzer sound
+                    }
+                    else
+                    {
+                        channel.sendMessage("there is no buzzer to press").queue();
                     }
                     break;
                 }
