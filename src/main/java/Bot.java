@@ -14,8 +14,10 @@ import javax.imageio.ImageIO;
 import javax.security.auth.login.LoginException;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Locale;
 
 @Slf4j
@@ -181,7 +183,16 @@ public class Bot extends ListenerAdapter {
                 case ("pd"):
                 case ("plotdiagram"): {
                     try {
-                        Process p = Runtime.getRuntime().exec("python ../python/plotter.py");
+                        Process p = Runtime.getRuntime().exec("python src/main/python/plotter.py");
+                        BufferedReader input = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+                        String line;
+                        while ((line = input.readLine()) != null)
+                        {
+                            log.error("Python Error output: "+line);
+                            channel.sendMessage("Python Error output: "+line).queue();
+
+                        }
+                        input.close();
                         //channel.sendMessage("drawn diagram").queue();
                     } catch (IOException e) {
                         channel.sendMessage("Unexpected Error ocurred. Please Check the logs").queue();
