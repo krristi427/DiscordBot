@@ -25,4 +25,5 @@ test.java
  test
 Bot.java
  Bot
+ Bot$Pollingtypes
  Bot$States
