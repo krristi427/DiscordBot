@@ -211,7 +211,6 @@ public class Bot extends ListenerAdapter {
                     Poll.Pollingtypes pollingtyp = Poll.Pollingtypes.PUBLIC;
                     if(content.length>1)
                     {
-                        state = States.POLL;
                         switch (content[1])
                         {
                             case ("private"): {
@@ -249,7 +248,7 @@ public class Bot extends ListenerAdapter {
                     break;
                 }
                 case ("poll"): {
-                    if(state == States.POLL) {
+                    if(activPoll!=null) {
                         if (content.length > 1) {
 
                             if(activPoll.pollingtyp == Poll.Pollingtypes.QUICK)
@@ -266,7 +265,7 @@ public class Bot extends ListenerAdapter {
                             if(activPoll.pollingtyp == Poll.Pollingtypes.PRIVATE)
                             {
                                 try {
-                                    message.delete();
+                                    message.delete().queue();
                                 }
                                 catch (net.dv8tion.jda.api.exceptions.InsufficientPermissionException e)
                                 {

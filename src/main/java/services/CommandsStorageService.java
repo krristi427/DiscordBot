@@ -18,6 +18,7 @@ public class CommandsStorageService {
 
     public static final String FILE_NAME = "src/main/resources/json/commands.json";
     public static final Path FILE_NAME_PATH = Paths.get(FILE_NAME);
+
     private static final CommandsStorageService instance = new CommandsStorageService();
     public static CommandsStorageService getInstance() {
         return instance;
