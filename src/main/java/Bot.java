@@ -90,6 +90,9 @@ public class Bot extends ListenerAdapter {
                 case ("!stopPlaying") -> {
                     Sound.getInstance().stopPlaying(event.getChannel());
                 }
+                case ("!currentQueue") -> {
+                    Sound.getInstance().currentQueue(event.getChannel());
+                }
             }
             super.onGuildMessageReceived(event);
         }
@@ -109,9 +112,6 @@ public class Bot extends ListenerAdapter {
             command = command.toLowerCase(Locale.ROOT).replace(prefix, "");
 
             switch (command) {
-
-
-
 
                 //BEGIN DefaultServices
                 case ("help"): {

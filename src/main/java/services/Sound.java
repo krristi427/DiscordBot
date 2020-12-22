@@ -122,12 +122,16 @@ public class Sound {
 
         GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
         AudioPlayer player = musicManager.player;
-        AudioTrack playingTrack = player.getPlayingTrack();
 
         musicManager.scheduler.queue.clear();
         player.stopTrack();
         player.setPaused(false);
         channel.sendMessage("Playback has been completely stopped and the queue has been cleared.").queue();
+    }
+
+    public void currentQueue(TextChannel channel) {
+        GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
+        musicManager.scheduler.printQueue(channel);
     }
 
     private void connectToFirstVoiceChannel(AudioManager audioManager) {

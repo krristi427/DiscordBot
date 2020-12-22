@@ -4,6 +4,7 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
+import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -12,7 +13,6 @@ public class TrackScheduler extends AudioEventAdapter {
 
     private final AudioPlayer player;
     final BlockingQueue<AudioTrack> queue;
-    AudioTrack lastTrack;
 
     public TrackScheduler(AudioPlayer player) {
         this.player = player;
@@ -33,19 +33,19 @@ public class TrackScheduler extends AudioEventAdapter {
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
-        this.lastTrack = track;
         if (endReason.mayStartNext) {
             nextTrack();
         }
     }
 
-    @Override
-    public void onPlayerPause(AudioPlayer player) {
-        // Player was paused
-    }
+    public void printQueue(TextChannel channel) {
 
-    @Override
-    public void onPlayerResume(AudioPlayer player) {
-        // Player was resumed
+        StringBuilder queuedTracks = new StringBuilder();
+
+        for (AudioTrack audioTrack : queue) {
+            queuedTracks.append(audioTrack.getInfo().title).append(";\n");
+        }
+
+        channel.sendMessage("Current tracks in the queue are: " + queuedTracks).queue();
     }
 }
