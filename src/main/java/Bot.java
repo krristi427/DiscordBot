@@ -78,12 +78,17 @@ public class Bot extends ListenerAdapter {
         if (content[0].startsWith(prefix)){
 
             switch (content[0]) {
-                case("!play"): {
+                case ("!play") -> {
                     Sound.getInstance().loadAndPlay(event.getChannel(), content[1]);
                 }
-
-                case("!skip"): {
-                    Sound.getInstance().skipTrack(event.getChannel());
+                case ("!pause") -> {
+                    Sound.getInstance().pauseTrack(event.getChannel());
+                }
+                case ("!resume") -> {
+                    Sound.getInstance().resumeTrack(event.getChannel());
+                }
+                case ("!stopPlaying") -> {
+                    Sound.getInstance().stopPlaying(event.getChannel());
                 }
             }
             super.onGuildMessageReceived(event);

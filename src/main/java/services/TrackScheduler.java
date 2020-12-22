@@ -9,8 +9,10 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class TrackScheduler extends AudioEventAdapter {
+
     private final AudioPlayer player;
-    private final BlockingQueue<AudioTrack> queue;
+    final BlockingQueue<AudioTrack> queue;
+    AudioTrack lastTrack;
 
     public TrackScheduler(AudioPlayer player) {
         this.player = player;
@@ -31,8 +33,19 @@ public class TrackScheduler extends AudioEventAdapter {
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
+        this.lastTrack = track;
         if (endReason.mayStartNext) {
             nextTrack();
         }
+    }
+
+    @Override
+    public void onPlayerPause(AudioPlayer player) {
+        // Player was paused
+    }
+
+    @Override
+    public void onPlayerResume(AudioPlayer player) {
+        // Player was resumed
     }
 }
