@@ -1,3 +1,5 @@
+import dataObjects.*;
+import services.*;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -7,14 +9,9 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import services.CommandsService;
-import services.GreetingService;
-import services.Sound;
 
-import javax.imageio.ImageIO;
+
 import javax.security.auth.login.LoginException;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -25,12 +22,14 @@ public class Bot extends ListenerAdapter {
     //TODO find a way to silence the handleMessage Method while requesting to play music
 
     private enum States{EMPTY,BUZZIG,POLL};
-    private enum Pollingtypes{PRIVATE,PUBLIC,QUICK};
+
 
     private static States state = States.EMPTY;
     private static String prefix = "!";
-    private static ArrayList<Integer> poll_inputs;
-    private static Pollingtypes pollingtyp;
+    private static ArrayList<Poll> polls = new ArrayList<>();
+    private static Poll activPoll;
+
+
 
     public static void main(String[] args) throws LoginException {
         JDABuilder jdaBuilder = JDABuilder.createDefault("Nzg2MTQ1NTI0ODA5NzI4MDAw.X9CJEg._DielBHtcMZnGsG4hqcpKV0KceA");
@@ -105,18 +104,13 @@ public class Bot extends ListenerAdapter {
             command = command.toLowerCase(Locale.ROOT).replace(prefix, "");
 
             switch (command) {
+
+
+
+
+                //BEGIN DefaultServices
                 case ("help"): {
                     CommandsService.getInstance().helpRequired(channel);
-                    break;
-                }
-
-                case ("hellothere"): {
-                    GreetingService.getInstance().greetRequired(channel);
-                    break;
-                }
-
-                case ("creategreeting"): {
-                    GreetingService.getInstance().createGreeting(message, channel);
                     break;
                 }
 
@@ -128,6 +122,18 @@ public class Bot extends ListenerAdapter {
                     break;
                 }
 
+                //BEGIN GreetingServices
+                case ("hellothere"): {
+                    GreetingService.getInstance().greetRequired(channel);
+                    break;
+                }
+
+                case ("creategreeting"): {
+                    GreetingService.getInstance().createGreeting(message, channel);
+                    break;
+                }
+
+                //BEGIN QuizzServices
                 case ("startbuzzer"): {
                     //TODO select if with or without buzzer sound.
                     channel.sendMessage("stated Buzzering").queue();
@@ -147,161 +153,12 @@ public class Bot extends ListenerAdapter {
                     }
                     break;
                 }
-
-                case ("pud"):
-                case ("plotuglydiagram"): {
-                    int width = 250;
-                    int height = 250;
-
-                    // Constructs a BufferedImage of one of the predefined image types.
-                    BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-
-                    // Create a graphics which can be used to draw into the buffered image
-                    Graphics2D g2d = bufferedImage.createGraphics();
-
-                    // fill all the image with white
-                    g2d.setColor(Color.white);
-                    g2d.fillRect(0, 0, width, height);
-
-                    // create a circle with black
-                    g2d.setColor(Color.black);
-                    g2d.fillOval(0, 0, width, height);
-
-                    // create a string with yellow
-                    g2d.setColor(Color.yellow);
-                    g2d.drawString("this is a diagram", 50, 120);
-
-                    // Disposes of this graphics context and releases any system resources that it is using.
-                    g2d.dispose();
-
-                    // Save as PNG
-                    File file = new File("src/main/resources/misc/dataoutput.png");
-
-                    try {
-                        ImageIO.write(bufferedImage, "png", file);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                    //send the Diagram
-                    try {
-                        channel.sendFile(file).queue();
-                    } catch (Exception e) {
-                        channel.sendMessage("Unexpected Error ocurred. Please Check the logs").queue();
-                        log.error("Unexpected Error ocurred");
-                        e.printStackTrace();
-                    }
-
-                    break;
-                }
-
-                case ("pd"):
-                case ("plotdiagram"): {
-                    if(content.length>1) {
-
-                        try {
-                            Process p = Runtime.getRuntime().exec("python src/main/python/plotter.py " + content[1]);
-                            BufferedReader errorinput = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-                            String errorline;
-                            while ((errorline = errorinput.readLine()) != null) {
-                                log.error("Python Error occurred: " + errorline);
-                                channel.sendMessage("Python Error occurred: " + errorline).queue(); //Test purpose
-
-                            }
-                            errorinput.close();
-
-                            //send the Diagram
-                            if(content[1].compareTo("raw")==0)
-                            {
-                                BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
-                                String line;
-                                String buff="";
-                                while ((line = input.readLine()) != null) {
-                                    buff+=line+"\n";
-                                }
-                                input.close();
-                                channel.sendMessage(buff).queue();
-                            }
-                            else {
-                                File file = new File("src/main/resources/misc/dataoutput.png");
-                                channel.sendFile(file).queue();
-                            }
-
-                        } catch (IOException e) {
-                            channel.sendMessage("Unexpected Error occurred. Please Check the logs").queue();
-                            log.error("Unexpected Error occurred: ");
-                            e.printStackTrace();
-                        }
-                    }
-                    else
-                        channel.sendMessage("Error: Please mind the syntax").queue();
-                    break;
-                }
-                case ("startpoll"): {
-                    if(content.length>1)
-                    {
-                        state = States.POLL;
-                        switch (content[1])
-                        {
-                            case ("private"): {
-                                pollingtyp = Pollingtypes.PRIVATE;
-                                break;
-                            }
-                            case ("public"): {
-                                pollingtyp = Pollingtypes.PUBLIC;
-                            }
-                                break;
-                            case ("quick"): {
-                                pollingtyp = Pollingtypes.QUICK;
-                                break;
-                            }
-                            default: {
-                                channel.sendMessage("Error: this polling-typ is not known").queue();
-                            }
-
-                        }
-                        String[] possibilitys = new String[content.length-2];
-                        String output = "";
-                        for (int i=0; i < possibilitys.length; i++)
-                        {
-                            possibilitys[i]=content[i+2];
-                            output += i+": "+possibilitys[i]+"\n";
-                        }
-                        channel.sendMessage("----\n"+output+"\n----").queue();
-                    }
-                    else
-                        channel.sendMessage("Error: Please mind the syntax").queue();
-                    break;
-                }
-                case ("poll"): {
-                    if(state == States.POLL) {
-                        if (content.length > 1) {
-                            poll_inputs.add(Integer.valueOf(content[1]));
-                            if(pollingtyp == Pollingtypes.PRIVATE)
-                            {
-
-                            }
-                        } else
-                            channel.sendMessage("Error: Please mind the syntax").queue();
-                    }
-                    else
-                        channel.sendMessage("Please start a poll first").queue();
-                    break;
-                }
+                //BEGIN PlottingServices
                 case ("inputdata"):
                 {
                     if(content.length>1) {
                         try {
-                            FileWriter writer = new FileWriter("src/main/resources/misc/data.txt");
-                            for (int i=1;i<content.length;i++)
-                            {
-                                String[] s = content[i].split(":");
-                                writer.write(s[0]+" "+s[1]+"\n");
-                            }
-
-                            writer.close();
-                            channel.sendMessage("Saved data").queue();
-
+                            PlottingService.getInstance().inputdata(1,content,channel);
                         }
                         catch (IOException e) {
                             channel.sendMessage("Unexpected Error occurred. Please Check the logs").queue();
@@ -314,6 +171,151 @@ public class Bot extends ListenerAdapter {
                         channel.sendMessage("Error: Please mind the syntax").queue();
                     break;
                 }
+
+                case ("pud"):
+                case ("plotuglydiagram"): {
+                    try {
+                        PlottingService.getInstance().plotugly(channel);
+                    } catch (IOException e) {
+                        channel.sendMessage("Unexpected Error ocurred. Please Check the logs").queue();
+                        log.error("Unexpected Error ocurred");
+                        e.printStackTrace();
+                    }
+                    break;
+                }
+
+                case ("pd"):
+                case ("plotdiagram"): {
+                    if(content.length>1) {
+
+                        try {
+                            PlottingService.getInstance().plot(content,channel);
+
+                        } catch (IOException  e) {
+                            channel.sendMessage("Unexpected Error occurred. Please Check the logs").queue();
+                            log.error("Unexpected Error occurred: ");
+                            e.printStackTrace();
+                        }
+                        catch (PlottingService.PythonError e) {
+                            log.error(e.errorLines);
+                        }
+                    }
+                    else
+                        channel.sendMessage("Error: Please mind the syntax").queue();
+                    break;
+                }
+
+                //BEGIN PollingServices //TODO move Plotting functions to service
+                case ("startpoll"):
+                {
+                    Poll.Pollingtypes pollingtyp = Poll.Pollingtypes.PUBLIC;
+                    if(content.length>1)
+                    {
+                        switch (content[1])
+                        {
+                            case ("private"): {
+                                pollingtyp = Poll.Pollingtypes.PRIVATE;
+                                break;
+                            }
+                            case ("public"): {
+                                pollingtyp = Poll.Pollingtypes.PUBLIC;
+                            }
+                                break;
+                            case ("quick"): {
+                                pollingtyp = Poll.Pollingtypes.QUICK;
+                                break;
+                            }
+                            default: {
+                                channel.sendMessage("This polling-typ is not known. Falling back to public").queue();
+                                break;
+                            }
+                        }
+
+                        String[] possibilitys = new String[content.length-2];
+                        String output = "";
+                        for (int i=0; i < possibilitys.length; i++)
+                        {
+                            possibilitys[i]=content[i+2];
+                            output += i+": "+possibilitys[i]+"\n";
+                        }
+                        Poll newPoll = new Poll(pollingtyp,possibilitys);
+                        polls.add(newPoll);
+                        activPoll = newPoll;
+                        channel.sendMessage("--Poll: "+(polls.size()-1)+" --\n"+output+"---------").queue();
+                    }
+                    else
+                        channel.sendMessage("Error: Please mind the syntax").queue();
+                    break;
+                }
+                case ("poll"): {
+                    if(activPoll!=null) {
+                        if (content.length > 1) {
+
+                            if(activPoll.pollingtyp == Poll.Pollingtypes.QUICK)
+                            {
+                                channel.sendMessage("This Command is not allowed in Quickmode").queue();
+                                break;
+                            }
+
+                            if(content[1].matches("\\d+"))
+                                activPoll.addToPossibilitie(Integer.valueOf(content[1]));
+                            else
+                                activPoll.addToPossibilitie(content[1]);
+
+                            if(activPoll.pollingtyp == Poll.Pollingtypes.PRIVATE)
+                            {
+                                try {
+                                    message.delete().queue();
+                                }
+                                catch (net.dv8tion.jda.api.exceptions.InsufficientPermissionException e)
+                                {
+                                    channel.sendMessage("Error: The Bot has does not have enough rights for this polling-typ! Falling back to Public").queue();
+                                    activPoll.pollingtyp = Poll.Pollingtypes.PUBLIC;
+                                }
+                            }
+
+                        } else
+                            channel.sendMessage("Error: Please mind the syntax").queue();
+                    }
+                    else
+                        channel.sendMessage("Please start a poll first").queue();
+                    break;
+                }
+                case("activatepoll"):
+                {
+                    if (content.length > 1) {
+                        if(content[1].matches("\\d+")) {
+                            activPoll = polls.get(Integer.valueOf(content[1]));
+                            String output="";
+                            String[] possibilitys = activPoll.getAnswers();
+                            for (int i=0; i < possibilitys.length; i++)
+                            {
+                                output += i+": "+possibilitys[i]+"\n";
+                            }
+                            channel.sendMessage("--Poll: "+polls.indexOf(activPoll)+" --\n"+output+"---------").queue();
+                        }
+                        else
+                            channel.sendMessage("Error: Only Digits are allowed as first argument").queue();
+                    }
+                    else
+                        channel.sendMessage("Error: Please mind the syntax").queue();
+                    break;
+                }
+                case("endpoll"):
+                {
+                    try {
+                        PlottingService.getInstance().inputdata(0,activPoll.getPollingResults(),channel);
+                    }
+                    catch (IOException e) {
+                        channel.sendMessage("Unexpected Error occurred. Please Check the logs").queue();
+                        log.error("Unexpected Error occurred: ");
+                        e.printStackTrace();
+                    }
+                    break;
+                }
+
+                //END SERVICES
+
 
                 default: {
                     channel.sendMessage("Invalid Command, type "+prefix+"help for helpy stuff").queue();
