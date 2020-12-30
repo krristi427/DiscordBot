@@ -1,4 +1,5 @@
 import dataObjects.*;
+import org.jetbrains.annotations.NotNull;
 import services.*;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDA;
@@ -38,13 +39,11 @@ public class Bot extends ListenerAdapter {
         Bot b = new Bot();
         build.addEventListener(b);
         jdaBuilder.setActivity(Activity.playing("type "+prefix+"help to get help"));
-
-
     }
 
 
     @Override
-    public void onMessageReceived(MessageReceivedEvent event) {
+    public void onMessageReceived(@NotNull MessageReceivedEvent event) {
 
         try{
             log.info("Received message with text: {}", event.getMessage().getContentRaw());
@@ -58,7 +57,7 @@ public class Bot extends ListenerAdapter {
     }
 
     @Override
-    public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
+    public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
 
         try{
             log.info("Received message with text: {}", event.getMessage().getContentRaw());
@@ -319,6 +318,13 @@ public class Bot extends ListenerAdapter {
                     break;
                 }
 
+                //BEGIN JokeService
+                case("joke"):
+                {
+                    JokeService.getInstance().getJoke(channel);
+                    break;
+                }
+
                 //END SERVICES
 
 
@@ -326,7 +332,6 @@ public class Bot extends ListenerAdapter {
                     channel.sendMessage("Invalid Command, type "+prefix+"help for helpy stuff").queue();
                     break;
                 }
-
             }
         }
     }

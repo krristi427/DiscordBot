@@ -1,14 +1,16 @@
 services/PollingService.java
  services.PollingService
-services/CommandsStorageService.java
- services.CommandsStorageService
- services.CommandsStorageService$1
-services/PlottingService.java
- services.PlottingService
- services.PlottingService$PythonError
+services/TrackScheduler.java
+ services.TrackScheduler
 services/AuthorisationService.java
  services.AuthorisationService
  services.AuthorisationService$1
+services/PlottingService.java
+ services.PlottingService
+ services.PlottingService$PythonError
+services/Sound.java
+ services.Sound
+ services.Sound$1
 services/AudioPlayerSendHandler.java
  services.AudioPlayerSendHandler
 services/GreetingsStorageService.java
@@ -29,15 +31,16 @@ dataObjects/Command.java
  dataObjects.Command
 dataObjects/Possibility.java
  dataObjects.Possibility
+services/GuildMusicManager.java
+ services.GuildMusicManager
+services/CommandsStorageService.java
+ services.CommandsStorageService
+ services.CommandsStorageService$1
 services/GreetingService.java
  services.GreetingService
-services/TrackScheduler.java
- services.TrackScheduler
+services/JokeService.java
+ services.JokeService
+ services.JokeService$1
 Bot.java
  Bot
  Bot$States
-services/GuildMusicManager.java
- services.GuildMusicManager
-services/Sound.java
- services.Sound
- services.Sound$1
