@@ -1,6 +1,5 @@
 import dataObjects.*;
 import org.jetbrains.annotations.NotNull;
-import services.*;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -10,7 +9,11 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-
+import services.audio.Sound;
+import services.commands.CommandsService;
+import services.greeting.GreetingService;
+import services.joke.JokeService;
+import services.plotting.PlottingService;
 
 import javax.security.auth.login.LoginException;
 import java.io.*;

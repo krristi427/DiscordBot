@@ -1,4 +1,4 @@
-package services;
+package services.poll;
 
 public class PollingService {
 }

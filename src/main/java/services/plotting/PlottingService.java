@@ -1,4 +1,4 @@
-package services;
+package services.plotting;
 
 import net.dv8tion.jda.api.entities.MessageChannel;
 import org.jetbrains.annotations.NotNull;

@@ -1,4 +1,4 @@
-package services;
+package services.greeting;
 
 import dataObjects.Greeting;
 import net.dv8tion.jda.api.entities.Message;

@@ -1,4 +1,4 @@
-package services;
+package services.joke;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
