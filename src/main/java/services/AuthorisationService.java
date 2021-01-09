@@ -7,10 +7,7 @@ import dataObjects.Command;
 import lombok.Getter;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.User;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,6 +18,13 @@ import java.util.List;
 public class AuthorisationService {
     public static final String FILE_NAME = "src/main/resources/json/authorisationProperties.json";
     public static final Path FILE_NAME_PATH = Paths.get(FILE_NAME);
+
+    private static AuthorisationService instance;
+    public static AuthorisationService getInstance() throws IOException {
+        if (instance==null)
+                instance = new AuthorisationService();
+        return instance;
+    }
 
     private final Gson gson = new Gson();
     private @Getter List<AuthorisationPair> authorisationPairs;

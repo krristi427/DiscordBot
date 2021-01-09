@@ -1,5 +1,7 @@
 package dataObjects;
 
+import net.dv8tion.jda.api.entities.MessageChannel;
+
 import java.util.ArrayList;
 
 public class Poll {
@@ -54,6 +56,16 @@ public class Poll {
             output[i]=possibilities.get(i).answer+":"+possibilities.get(i).count;
         }
         return output;
+    }
+
+    public void printPoll(MessageChannel channel, int index)
+    {
+        String output = "";
+        for (int i=0; i < possibilities.size(); i++)
+        {
+            output += i+": "+possibilities.get(i)+"\n";
+        }
+        channel.sendMessage("--Poll: "+(index)+" --\n"+output+"---------").queue();
     }
 
 

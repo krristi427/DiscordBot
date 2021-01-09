@@ -26,20 +26,20 @@ public class Bot extends ListenerAdapter {
 
     private static States state = States.EMPTY;
     private static String prefix = "!";
-    private static ArrayList<Poll> polls = new ArrayList<>();
-    private static Poll activPoll;
+    PollingService pollingService = new PollingService();
+
+
 
 
 
     public static void main(String[] args) throws LoginException {
+
         JDABuilder jdaBuilder = JDABuilder.createDefault("Nzg2MTQ1NTI0ODA5NzI4MDAw.X9CJEg._DielBHtcMZnGsG4hqcpKV0KceA");
 
         JDA build = jdaBuilder.build();
         Bot b = new Bot();
         build.addEventListener(b);
         jdaBuilder.setActivity(Activity.playing("type "+prefix+"help to get help"));
-
-
     }
 
 
@@ -80,10 +80,12 @@ public class Bot extends ListenerAdapter {
             switch (content[0]) {
                 case("!play"): {
                     Sound.getInstance().loadAndPlay(event.getChannel(), content[1]);
+                    break;
                 }
 
                 case("!skip"): {
                     Sound.getInstance().skipTrack(event.getChannel());
+                    break;
                 }
             }
             super.onGuildMessageReceived(event);
@@ -106,8 +108,6 @@ public class Bot extends ListenerAdapter {
             switch (command) {
 
 
-
-
                 //BEGIN DefaultServices
                 case ("help"): {
                     CommandsService.getInstance().helpRequired(channel);
@@ -115,7 +115,7 @@ public class Bot extends ListenerAdapter {
                 }
 
                 case ("changeprefix"): {
-                    if(content.length>2)
+                    if(content.length>1)
                         prefix = content[1];
                     else
                         channel.sendMessage("please mind the syntax "+prefix+"changeprefix newPrefix").queue();
@@ -208,70 +208,30 @@ public class Bot extends ListenerAdapter {
                 //BEGIN PollingServices //TODO move Plotting functions to service
                 case ("startpoll"):
                 {
-                    Poll.Pollingtypes pollingtyp = Poll.Pollingtypes.PUBLIC;
+
                     if(content.length>1)
                     {
-                        switch (content[1])
-                        {
-                            case ("private"): {
-                                pollingtyp = Poll.Pollingtypes.PRIVATE;
-                                break;
-                            }
-                            case ("public"): {
-                                pollingtyp = Poll.Pollingtypes.PUBLIC;
-                            }
-                                break;
-                            case ("quick"): {
-                                pollingtyp = Poll.Pollingtypes.QUICK;
-                                break;
-                            }
-                            default: {
-                                channel.sendMessage("This polling-typ is not known. Falling back to public").queue();
-                                break;
-                            }
-                        }
 
-                        String[] possibilitys = new String[content.length-2];
-                        String output = "";
-                        for (int i=0; i < possibilitys.length; i++)
-                        {
-                            possibilitys[i]=content[i+2];
-                            output += i+": "+possibilitys[i]+"\n";
-                        }
-                        Poll newPoll = new Poll(pollingtyp,possibilitys);
-                        polls.add(newPoll);
-                        activPoll = newPoll;
-                        channel.sendMessage("--Poll: "+(polls.size()-1)+" --\n"+output+"---------").queue();
+
                     }
                     else
                         channel.sendMessage("Error: Please mind the syntax").queue();
                     break;
                 }
                 case ("poll"): {
-                    if(activPoll!=null) {
+                    if(pollingService.existsActivePoll()) {
                         if (content.length > 1) {
-
-                            if(activPoll.pollingtyp == Poll.Pollingtypes.QUICK)
-                            {
-                                channel.sendMessage("This Command is not allowed in Quickmode").queue();
-                                break;
+                            try{
+                                pollingService.poll(content,message);
                             }
-
-                            if(content[1].matches("\\d+"))
-                                activPoll.addToPossibilitie(Integer.valueOf(content[1]));
-                            else
-                                activPoll.addToPossibilitie(content[1]);
-
-                            if(activPoll.pollingtyp == Poll.Pollingtypes.PRIVATE)
+                            catch (net.dv8tion.jda.api.exceptions.InsufficientPermissionException e)
                             {
-                                try {
-                                    message.delete().queue();
-                                }
-                                catch (net.dv8tion.jda.api.exceptions.InsufficientPermissionException e)
-                                {
-                                    channel.sendMessage("Error: The Bot has does not have enough rights for this polling-typ! Falling back to Public").queue();
-                                    activPoll.pollingtyp = Poll.Pollingtypes.PUBLIC;
-                                }
+                                channel.sendMessage("Error: The Bot has does not have enough rights for this polling-typ! Falling back to Public").queue();
+                                pollingService.setActivePollingtyp(Poll.Pollingtypes.PUBLIC);
+                            }
+                            catch (PollingService.WrongPollingTypException e)
+                            {
+                                channel.sendMessage("This Command is not allowed in this Pollingtyp: "+e.pollingtype).queue();
                             }
 
                         } else
@@ -281,32 +241,41 @@ public class Bot extends ListenerAdapter {
                         channel.sendMessage("Please start a poll first").queue();
                     break;
                 }
-                case("activatepoll"):
+
+                case("activepoll"):
                 {
                     if (content.length > 1) {
-                        if(content[1].matches("\\d+")) {
-                            activPoll = polls.get(Integer.valueOf(content[1]));
-                            String output="";
-                            String[] possibilitys = activPoll.getAnswers();
-                            for (int i=0; i < possibilitys.length; i++)
-                            {
-                                output += i+": "+possibilitys[i]+"\n";
-                            }
-                            channel.sendMessage("--Poll: "+polls.indexOf(activPoll)+" --\n"+output+"---------").queue();
+                        try {
+                            pollingService.activePoll(content,channel);
                         }
-                        else
-                            channel.sendMessage("Error: Only Digits are allowed as first argument").queue();
-                    }
-                    else
+                        catch (PollingService.WrongValueException e)
+                        {
+                            channel.sendMessage("Error: Only Digits are allowed as first argument. But given: "+e.value).queue();
+                        }
+                    } else
                         channel.sendMessage("Error: Please mind the syntax").queue();
                     break;
                 }
+
                 case("endpoll"):
                 {
-                    try {
-                        PlottingService.getInstance().inputdata(0,activPoll.getPollingResults(),channel);
+                    try
+                    {
+                        pollingService.endpoll(channel);
                     }
                     catch (IOException e) {
+                        channel.sendMessage("Unexpected Error occurred. Please Check the logs").queue();
+                        //log.error("Unexpected Error occurred: ");
+                        e.printStackTrace();
+                    }
+                    break;
+                }
+
+                case("admin?"):
+                {
+                    try {
+                        AuthorisationService.getInstance().isAuthorised("admin",event.getMember());
+                    } catch (IOException e) {
                         channel.sendMessage("Unexpected Error occurred. Please Check the logs").queue();
                         log.error("Unexpected Error occurred: ");
                         e.printStackTrace();

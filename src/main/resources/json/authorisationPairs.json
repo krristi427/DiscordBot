@@ -2,7 +2,7 @@
   {
     "id": 0,
     "name": "admin",
-    "members": ["admin"],
+    "members": ["admin","developer"],
     "authorisationLevel": 100
   }
 ]

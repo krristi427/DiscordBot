@@ -1,3 +1,4 @@
-s 1
-a 1
-d 0
+ok 1
+nichtOK 0
+rot 0
+grün 0
