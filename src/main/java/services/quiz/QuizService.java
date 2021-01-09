@@ -1,4 +1,4 @@
-package services;
+package services.quiz;
 
 public class QuizService {
     //TODO put Buzzer here

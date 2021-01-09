@@ -1,9 +1,8 @@
-package services;
+package services.authorisation;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import dataObjects.AuthorisationPair;
-import dataObjects.Command;
 import lombok.Getter;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;

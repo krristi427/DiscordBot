@@ -2,12 +2,15 @@ services/PollingService.java
  services.PollingService
 services/TrackScheduler.java
  services.TrackScheduler
-services/PlottingService.java
- services.PlottingService
- services.PlottingService$PythonError
 services/AuthorisationService.java
  services.AuthorisationService
  services.AuthorisationService$1
+services/PlottingService.java
+ services.PlottingService
+ services.PlottingService$PythonError
+services/Sound.java
+ services.Sound
+ services.Sound$1
 services/AudioPlayerSendHandler.java
  services.AudioPlayerSendHandler
 services/GreetingsStorageService.java
@@ -17,8 +20,6 @@ dataObjects/AuthorisationPair.java
  dataObjects.AuthorisationPair
 services/QuizService.java
  services.QuizService
-test.java
- test
 dataObjects/Greeting.java
  dataObjects.Greeting
 services/CommandsService.java
@@ -37,9 +38,9 @@ services/CommandsStorageService.java
  services.CommandsStorageService$1
 services/GreetingService.java
  services.GreetingService
-services/Sound.java
- services.Sound
- services.Sound$1
+services/JokeService.java
+ services.JokeService
+ services.JokeService$1
 Bot.java
  Bot
  Bot$States

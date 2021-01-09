@@ -1,4 +1,4 @@
-package services;
+package services.poll;
 
 import dataObjects.Poll;
 import net.dv8tion.jda.api.entities.Message;

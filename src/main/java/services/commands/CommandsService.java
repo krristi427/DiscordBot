@@ -1,4 +1,4 @@
-package services;
+package services.commands;
 
 import dataObjects.Command;
 import net.dv8tion.jda.api.entities.MessageChannel;

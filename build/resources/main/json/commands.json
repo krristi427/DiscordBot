@@ -19,4 +19,19 @@
 }, {
   "name": "!plotDiagram",
   "explanation": "Plots the results of a poll in a readable manner"
+}, {
+  "name": "!play",
+  "explanation": "Needs an extra argument providing the file (or Youtube Link) where the Track is located"
+}, {
+  "name": "!pause",
+  "explanation": "Pauses the currently playing track. To start it type !resume"
+}, {
+  "name": "!resume",
+  "explanation": "Restarts a paused track"
+}, {
+  "name": "!stopPlaying",
+  "explanation": "Stops everything and clears the queue"
+}, {
+  "name": "!currentQueue",
+  "explanation": "Prints out the current queue of tracks"
 }]

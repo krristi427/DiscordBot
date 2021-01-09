@@ -26,25 +26,25 @@ public class Bot extends ListenerAdapter {
 
     private static States state = States.EMPTY;
     private static String prefix = "!";
-    PollingService pollingService = new PollingService();
-
-
+    private static ArrayList<Poll> polls = new ArrayList<>();
+    private static Poll activPoll;
 
 
 
     public static void main(String[] args) throws LoginException {
-
         JDABuilder jdaBuilder = JDABuilder.createDefault("Nzg2MTQ1NTI0ODA5NzI4MDAw.X9CJEg._DielBHtcMZnGsG4hqcpKV0KceA");
 
         JDA build = jdaBuilder.build();
         Bot b = new Bot();
         build.addEventListener(b);
         jdaBuilder.setActivity(Activity.playing("type "+prefix+"help to get help"));
+
+
     }
 
 
     @Override
-    public void onMessageReceived(MessageReceivedEvent event) {
+    public void onMessageReceived(@NotNull MessageReceivedEvent event) {
 
         try{
             log.info("Received message with text: {}", event.getMessage().getContentRaw());
@@ -58,7 +58,7 @@ public class Bot extends ListenerAdapter {
     }
 
     @Override
-    public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
+    public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
 
         try{
             log.info("Received message with text: {}", event.getMessage().getContentRaw());
@@ -78,14 +78,21 @@ public class Bot extends ListenerAdapter {
         if (content[0].startsWith(prefix)){
 
             switch (content[0]) {
-                case("!play"): {
+                case ("!play") -> {
                     Sound.getInstance().loadAndPlay(event.getChannel(), content[1]);
                     break;
                 }
-
-                case("!skip"): {
-                    Sound.getInstance().skipTrack(event.getChannel());
-                    break;
+                case ("!pause") -> {
+                    Sound.getInstance().pauseTrack(event.getChannel());
+                }
+                case ("!resume") -> {
+                    Sound.getInstance().resumeTrack(event.getChannel());
+                }
+                case ("!stopPlaying") -> {
+                    Sound.getInstance().stopPlaying(event.getChannel());
+                }
+                case ("!currentQueue") -> {
+                    Sound.getInstance().currentQueue(event.getChannel());
                 }
             }
             super.onGuildMessageReceived(event);
@@ -108,6 +115,8 @@ public class Bot extends ListenerAdapter {
             switch (command) {
 
 
+
+
                 //BEGIN DefaultServices
                 case ("help"): {
                     CommandsService.getInstance().helpRequired(channel);
@@ -115,7 +124,7 @@ public class Bot extends ListenerAdapter {
                 }
 
                 case ("changeprefix"): {
-                    if(content.length>1)
+                    if(content.length>2)
                         prefix = content[1];
                     else
                         channel.sendMessage("please mind the syntax "+prefix+"changeprefix newPrefix").queue();
@@ -280,6 +289,13 @@ public class Bot extends ListenerAdapter {
                         log.error("Unexpected Error occurred: ");
                         e.printStackTrace();
                     }
+                    break;
+                }
+
+                //BEGIN JokeService
+                case("joke"):
+                {
+                    JokeService.getInstance().getJoke(channel);
                     break;
                 }
 
