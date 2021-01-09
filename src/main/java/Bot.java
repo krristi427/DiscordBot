@@ -1,5 +1,4 @@
-import dataObjects.*;
-import services.*;
+import dataObjects.Poll;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -9,10 +8,18 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.NotNull;
+import services.audio.Sound;
+import services.authorisation.AuthorisationService;
+import services.commands.CommandsService;
+import services.greeting.GreetingService;
+import services.joke.JokeService;
+import services.plotting.PlottingService;
+import services.poll.PollingService;
 
 
 import javax.security.auth.login.LoginException;
-import java.io.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -26,8 +33,7 @@ public class Bot extends ListenerAdapter {
 
     private static States state = States.EMPTY;
     private static String prefix = "!";
-    private static ArrayList<Poll> polls = new ArrayList<>();
-    private static Poll activPoll;
+    PollingService pollingService = new PollingService();
 
 
 
