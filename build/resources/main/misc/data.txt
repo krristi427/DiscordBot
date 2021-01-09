@@ -1,0 +1,4 @@
+ok 1
+nichtOK 0
+rot 0
+grün 0

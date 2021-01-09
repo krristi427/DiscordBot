@@ -1,0 +1,22 @@
+[{
+  "name": "!help",
+  "explanation": "This is used to get a List of all possible commands"
+}, {
+  "name": "!helloThere",
+  "explanation": "Used to greet the Bot...if it's nice to you, it likes you"
+}, {
+  "name": "!createGreeting",
+  "explanation": "If you don't like what the bot has, you can add a new one. Make sure to provide a parameter"
+}, {
+  "name": "!startBuzzer",
+  "explanation": "Starts a small game. The winner is the first to buzz"
+}, {
+  "name": "!buzz",
+  "explanation": "Play with friends and see who is the first to buzz"
+}, {
+  "name": "!plotUglyDiagram",
+  "explanation": "Plots an ugly diagram. It can be modified to plot any diagram, given the right link"
+}, {
+  "name": "!plotDiagram",
+  "explanation": "Plots the results of a poll in a readable manner"
+}]
