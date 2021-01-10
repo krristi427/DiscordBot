@@ -1,5 +1,6 @@
 import dataObjects.Poll;
 import lombok.extern.slf4j.Slf4j;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -20,6 +21,7 @@ import services.poll.PollingService;
 
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
+import java.nio.channels.Channel;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -36,18 +38,67 @@ public class Bot extends ListenerAdapter {
     PollingService pollingService = new PollingService();
 
 
-
     public static void main(String[] args) throws LoginException {
         JDABuilder jdaBuilder = JDABuilder.createDefault("Nzg2MTQ1NTI0ODA5NzI4MDAw.X9CJEg._DielBHtcMZnGsG4hqcpKV0KceA");
+        //JDABuilder jdaBuilder = JDABuilder.createDefault("Nzk3ODMzMDcwMDEwMTcxNDMy.X_sN8g._JfC9VomIR-qoZ1LMc-c0uxGP0c");
 
         JDA build = jdaBuilder.build();
         Bot b = new Bot();
         build.addEventListener(b);
         jdaBuilder.setActivity(Activity.playing("type "+prefix+"help to get help"));
-
-
     }
 
+    private void sendMessage(String message, String title,  int color, MessageChannel channel)
+    {
+        EmbedBuilder info = new EmbedBuilder();
+        info.setTitle(title);
+        info.setColor(color);
+        info.setDescription(message);
+        channel.sendMessage(info.build()).queue();
+    }
+    private void sendMessage(String message, String title, MessageChannel channel)
+    {
+        EmbedBuilder info = new EmbedBuilder();
+        info.setTitle(title);
+        info.setColor(0xf45642);
+        info.setDescription(message);
+        channel.sendMessage(info.build()).queue();
+    }
+    private void sendMessage(String message, int color, MessageChannel channel)
+    {
+        EmbedBuilder info = new EmbedBuilder();
+        info.setColor(color);
+        info.setDescription(message);
+        channel.sendMessage(info.build()).queue();
+    }
+    private void sendMessage(String message, MessageChannel channel)
+    {
+        EmbedBuilder info = new EmbedBuilder();
+        info.setColor(0xf45642);
+        info.setDescription(message);
+        channel.sendMessage(info.build()).queue();
+    }
+    private void sendInfoMessage(String message, MessageChannel channel)
+    {
+        EmbedBuilder info = new EmbedBuilder();
+        info.setColor(0xf7ef02);
+        info.setDescription(message);
+        channel.sendMessage(info.build()).queue();
+    }
+    private void sendErrorMessage(String message, MessageChannel channel)
+    {
+        EmbedBuilder info = new EmbedBuilder();
+        info.setColor(0xf71302);
+        info.setDescription(message);
+        channel.sendMessage(info.build()).queue();
+    }
+    private void sendTextMessage(String message, MessageChannel channel)
+    {
+        EmbedBuilder info = new EmbedBuilder();
+        info.setColor(0x021ff7);
+        info.setDescription(message);
+        channel.sendMessage(info.build()).queue();
+    }
 
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
@@ -58,7 +109,7 @@ public class Bot extends ListenerAdapter {
 
         } catch (Exception e){
             log.warn("Could not process message", e);
-            event.getMessage().getChannel().sendMessage("Unexpected error occurred!").queue();
+            sendErrorMessage("Unexpected fatal error occurred!",event.getMessage().getChannel());
             e.printStackTrace();
         }
     }
@@ -80,30 +131,38 @@ public class Bot extends ListenerAdapter {
     private void handleGuildMessage(GuildMessageReceivedEvent event) {
 
         String[] content = event.getMessage().getContentRaw().split(" ");
-        prefix = "!";
-        if (content[0].startsWith(prefix)){
+        String command = content[0];
+        if(command.startsWith(prefix)) {
+            command = command.toLowerCase(Locale.ROOT).replace(prefix, "");
 
-            switch (content[0]) {
-                case ("!play") -> {
+            switch (command) {
+                case ("play") -> {
                     Sound.getInstance().loadAndPlay(event.getChannel(), content[1]);
                     break;
                 }
-                case ("!pause") -> {
+                case ("pause") -> {
                     Sound.getInstance().pauseTrack(event.getChannel());
+                    break;
                 }
-                case ("!resume") -> {
+                case ("resume") -> {
                     Sound.getInstance().resumeTrack(event.getChannel());
+                    break;
                 }
-                case ("!stopPlaying") -> {
+                case ("stop") -> {
                     Sound.getInstance().stopPlaying(event.getChannel());
+                    break;
                 }
-                case ("!currentQueue") -> {
+                case ("currentQueue") -> {
                     Sound.getInstance().currentQueue(event.getChannel());
+                    break;
                 }
             }
             super.onGuildMessageReceived(event);
         }
     }
+
+
+
 
     private void handleMessage(MessageReceivedEvent event) {
 
@@ -113,27 +172,25 @@ public class Bot extends ListenerAdapter {
         MessageChannel channel = event.getChannel();
         String[] content = message.getContentRaw().split(" ");
         String command = content[0];
-        prefix = "!";
 
         if(command.startsWith(prefix)) {
             command = command.toLowerCase(Locale.ROOT).replace(prefix, "");
 
             switch (command) {
-
-
-
-
                 //BEGIN DefaultServices
                 case ("help"): {
-                    CommandsService.getInstance().helpRequired(channel);
+                    CommandsService.getInstance().helpRequired(channel,prefix);
                     break;
                 }
 
                 case ("changeprefix"): {
-                    if(content.length>2)
+                    if(content.length>1)
+                    {
                         prefix = content[1];
+                        sendInfoMessage("Prefix changed to: "+prefix,channel);
+                    }
                     else
-                        channel.sendMessage("please mind the syntax "+prefix+"changeprefix newPrefix").queue();
+                        sendErrorMessage("please mind the syntax: "+prefix+"changeprefix newPrefix",channel);
                     break;
                 }
 
@@ -151,7 +208,7 @@ public class Bot extends ListenerAdapter {
                 //BEGIN QuizzServices
                 case ("startbuzzer"): {
                     //TODO select if with or without buzzer sound.
-                    channel.sendMessage("stated Buzzering").queue();
+                    sendInfoMessage("stated Buzzering",channel);
                     state = States.BUZZIG;
                     break;
                 }
@@ -159,12 +216,12 @@ public class Bot extends ListenerAdapter {
                 case ("buzz"): {
                     if (state == States.BUZZIG) {
                         state = States.EMPTY;
-                        channel.sendMessage(event.getAuthor().getName() + " was first to buzzer! ").queue();
+                        sendTextMessage(event.getAuthor().getName() + " was first to buzzer! ",channel);
                         //TODO play buzzer sound
                     }
                     else
                     {
-                        channel.sendMessage("there is no buzzer to press").queue();
+                        sendErrorMessage("there is no buzzer to press",channel);
                     }
                     break;
                 }
@@ -176,14 +233,14 @@ public class Bot extends ListenerAdapter {
                             PlottingService.getInstance().inputdata(1,content,channel);
                         }
                         catch (IOException e) {
-                            channel.sendMessage("Unexpected Error occurred. Please Check the logs").queue();
+                            sendErrorMessage("Unexpected Error occurred. Please Check the logs",channel);
                             log.error("Unexpected Error occurred: ");
                             e.printStackTrace();
                         }
 
                     }
                     else
-                        channel.sendMessage("Error: Please mind the syntax").queue();
+                        sendErrorMessage("Error: Please mind the syntax",channel);
                     break;
                 }
 
@@ -192,7 +249,7 @@ public class Bot extends ListenerAdapter {
                     try {
                         PlottingService.getInstance().plotugly(channel);
                     } catch (IOException e) {
-                        channel.sendMessage("Unexpected Error ocurred. Please Check the logs").queue();
+                        sendErrorMessage("Unexpected Error occurred. Please Check the logs",channel);
                         log.error("Unexpected Error ocurred");
                         e.printStackTrace();
                     }
@@ -207,7 +264,7 @@ public class Bot extends ListenerAdapter {
                             PlottingService.getInstance().plot(content,channel);
 
                         } catch (IOException  e) {
-                            channel.sendMessage("Unexpected Error occurred. Please Check the logs").queue();
+                            sendErrorMessage("Unexpected Error occurred. Please Check the logs",channel);
                             log.error("Unexpected Error occurred: ");
                             e.printStackTrace();
                         }
@@ -216,7 +273,7 @@ public class Bot extends ListenerAdapter {
                         }
                     }
                     else
-                        channel.sendMessage("Error: Please mind the syntax").queue();
+                        sendErrorMessage("Error: Please mind the syntax",channel);
                     break;
                 }
 
@@ -230,7 +287,7 @@ public class Bot extends ListenerAdapter {
 
                     }
                     else
-                        channel.sendMessage("Error: Please mind the syntax").queue();
+                        sendErrorMessage("Error: Please mind the syntax",channel);
                     break;
                 }
                 case ("poll"): {
@@ -241,19 +298,19 @@ public class Bot extends ListenerAdapter {
                             }
                             catch (net.dv8tion.jda.api.exceptions.InsufficientPermissionException e)
                             {
-                                channel.sendMessage("Error: The Bot has does not have enough rights for this polling-typ! Falling back to Public").queue();
+                                sendErrorMessage("Error: The Bot has does not have enough rights for this polling-typ! Falling back to Public",channel);
                                 pollingService.setActivePollingtyp(Poll.Pollingtypes.PUBLIC);
                             }
                             catch (PollingService.WrongPollingTypException e)
                             {
-                                channel.sendMessage("This Command is not allowed in this Pollingtyp: "+e.pollingtype).queue();
+                                sendInfoMessage("This Command is not allowed in this Pollingtyp: "+e.pollingtype,channel);
                             }
 
                         } else
-                            channel.sendMessage("Error: Please mind the syntax").queue();
+                            sendErrorMessage("Error: Please mind the syntax",channel);
                     }
                     else
-                        channel.sendMessage("Please start a poll first").queue();
+                        sendErrorMessage("Please start a poll first",channel);
                     break;
                 }
 
@@ -265,10 +322,10 @@ public class Bot extends ListenerAdapter {
                         }
                         catch (PollingService.WrongValueException e)
                         {
-                            channel.sendMessage("Error: Only Digits are allowed as first argument. But given: "+e.value).queue();
+                            sendErrorMessage("Error: Only Digits are allowed as first argument. But given: "+e.value,channel);
                         }
                     } else
-                        channel.sendMessage("Error: Please mind the syntax").queue();
+                        sendErrorMessage("Error: Please mind the syntax",channel);
                     break;
                 }
 
@@ -279,7 +336,7 @@ public class Bot extends ListenerAdapter {
                         pollingService.endpoll(channel);
                     }
                     catch (IOException e) {
-                        channel.sendMessage("Unexpected Error occurred. Please Check the logs").queue();
+                        sendErrorMessage("Unexpected Error occurred. Please Check the logs",channel);
                         //log.error("Unexpected Error occurred: ");
                         e.printStackTrace();
                     }
@@ -291,7 +348,7 @@ public class Bot extends ListenerAdapter {
                     try {
                         AuthorisationService.getInstance().isAuthorised("admin",event.getMember());
                     } catch (IOException e) {
-                        channel.sendMessage("Unexpected Error occurred. Please Check the logs").queue();
+                        sendErrorMessage("Unexpected Error occurred. Please Check the logs",channel);
                         log.error("Unexpected Error occurred: ");
                         e.printStackTrace();
                     }
@@ -309,7 +366,7 @@ public class Bot extends ListenerAdapter {
 
 
                 default: {
-                    channel.sendMessage("Invalid Command, type "+prefix+"help for helpy stuff").queue();
+                    sendErrorMessage("Invalid Command, type "+prefix+"help for helpy stuff",channel);
                     break;
                 }
 
