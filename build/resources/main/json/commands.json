@@ -1,6 +1,6 @@
 [{
   "name": "help",
-  "explanation": "This is used to get a List of all possible commands"
+  "explanation": "This is used to get a List of all possible commands (you see them right now)"
 }, {
   "name": "helloThere",
   "explanation": "Used to greet the Bot...if it's nice to you, it likes you"
@@ -15,16 +15,25 @@
   "explanation": "Play with friends and see who is the first to buzz"
 }, {
   "name": "plotUglyDiagram",
-  "explanation": "Plots an ugly diagram. It can be modified to plot any diagram, given the right link"
+  "explanation": "Plots an ugly diagram."
 }, {
   "name": "plotDiagram",
-  "explanation": "Plots the results of a poll in a readable manner"
+  "explanation": "Plots the results of a poll in a readable manner. There are 3 plotting types (raw, bar and pie), give one of them as an argument."
 }, {
-  "name": "play",
-  "explanation": "Needs an extra argument providing the file (or Youtube Link) where the Track is located"
+  "name": "inputData",
+  "explanation": "is used for manually inputting data for plotting. Inputs need to be separate by :  (f.e.: A:3)"
 }, {
-  "name": "pause",
-  "explanation": "Pauses the currently playing track. To start it type !resume"
+  "name": "startPoll",
+  "explanation": "Starts a poll. There are 3 polling types (public, private and Quick)give one of them as first argument. Then give all possible options for this poll as single arguments to the function."
+}, {
+  "name": "poll",
+  "explanation": "give your vote for the active poll. You can ether pick the number of the option or the name of it as argument"
+}, {
+  "name": "activePoll",
+  "explanation": "shows or changes active poll. If you use function without argument it will show the active poll. To change the active poll give poll id as argument (every poll has his id in the title-line)."
+}, {
+  "name": "endPoll",
+  "explanation": "ends the active poll and prepares the data for plotting"
 }, {
   "name": "resume",
   "explanation": "Restarts a paused track"

@@ -68,12 +68,15 @@ public class PollingService {
 
     public void activePoll(@NotNull String[] content, @NotNull MessageChannel channel) throws WrongValueException {
 
-        if (content[1].matches("\\d+")) {
-            activPoll = polls.get(Integer.valueOf(content[1]));
-        }
-        else
+        if(content.length>1)
         {
-            throw new WrongValueException(content[1]);
+            if (content[1].matches("\\d+")) {
+                activPoll = polls.get(Integer.valueOf(content[1]));
+            }
+            else
+            {
+                throw new WrongValueException(content[1]);
+            }
         }
         activPoll.printPoll(channel, polls.indexOf(activPoll));
     }

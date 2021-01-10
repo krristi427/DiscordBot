@@ -257,6 +257,7 @@ public class Bot extends ListenerAdapter {
                 }
 
                 case ("pd"):
+                case ("plot"):
                 case ("plotdiagram"): {
                     if(content.length>1) {
 
@@ -316,16 +317,14 @@ public class Bot extends ListenerAdapter {
 
                 case("activepoll"):
                 {
-                    if (content.length > 1) {
-                        try {
-                            pollingService.activePoll(content,channel);
-                        }
-                        catch (PollingService.WrongValueException e)
-                        {
-                            sendErrorMessage("Error: Only Digits are allowed as first argument. But given: "+e.value,channel);
-                        }
-                    } else
-                        sendErrorMessage("Error: Please mind the syntax",channel);
+                    try {
+                        pollingService.activePoll(content,channel);
+                    }
+                    catch (PollingService.WrongValueException e)
+                    {
+                        sendErrorMessage("Error: Only Digits are allowed as first argument. But given: "+e.value,channel);
+                    }
+
                     break;
                 }
 

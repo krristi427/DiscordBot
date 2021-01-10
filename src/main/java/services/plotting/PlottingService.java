@@ -1,5 +1,6 @@
 package services.plotting;
 
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import org.jetbrains.annotations.NotNull;
 
@@ -59,7 +60,10 @@ public class PlottingService {
                 buff+=line+"\n";
             }
             input.close();
-            channel.sendMessage(buff).queue();
+            EmbedBuilder info = new EmbedBuilder();
+            info.setTitle("Plot:");
+            info.setDescription(buff);
+            channel.sendMessage(info.build()).queue();
         }
         else {
             File file = new File("src/main/resources/misc/dataoutput.png");

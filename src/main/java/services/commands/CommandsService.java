@@ -22,7 +22,7 @@ public class CommandsService {
             String name = command.getName();
             String explanation = command.getExplanation();
 
-            buffer += (prefix+name + ": " + explanation+"\n");
+            buffer += (prefix+name + ": " + explanation+"\n\n");
         }
         EmbedBuilder info = new EmbedBuilder();
         info.setTitle("Help");
