@@ -1,16 +1,21 @@
+services/poll/PollingService.java
+ services.poll.PollingService
+ services.poll.PollingService$WrongPollingTypException
+ services.poll.PollingService$WrongValueException
 services/audio/Sound.java
  services.audio.Sound
  services.audio.Sound$1
-services/commands/CommandsStorageService.java
- services.commands.CommandsStorageService
- services.commands.CommandsStorageService$1
 services/audio/TrackScheduler.java
  services.audio.TrackScheduler
-services/quiz/QuizService.java
- services.quiz.QuizService
+services/commands/CommandsService.java
+ services.commands.CommandsService
 services/joke/JokeService.java
  services.joke.JokeService
  services.joke.JokeService$1
+services/reactionHandelingService/ReactionHandelingService.java
+ services.reactionHandelingService.ReactionHandelingService
+services/quiz/QuizService.java
+ services.quiz.QuizService
 dataObjects/AuthorisationPair.java
  dataObjects.AuthorisationPair
 services/greeting/GreetingsStorageService.java
@@ -23,10 +28,9 @@ test.java
  test
 dataObjects/Greeting.java
  dataObjects.Greeting
-services/poll/PollingService.java
- services.poll.PollingService
- services.poll.PollingService$WrongPollingTypException
- services.poll.PollingService$WrongValueException
+services/plotting/PlottingService.java
+ services.plotting.PlottingService
+ services.plotting.PlottingService$PythonError
 dataObjects/Poll.java
  dataObjects.Poll
  dataObjects.Poll$Pollingtypes
@@ -40,11 +44,14 @@ services/audio/GuildMusicManager.java
  services.audio.GuildMusicManager
 services/audio/AudioPlayerSendHandler.java
  services.audio.AudioPlayerSendHandler
-services/plotting/PlottingService.java
- services.plotting.PlottingService
- services.plotting.PlottingService$PythonError
+services/commands/CommandsStorageService.java
+ services.commands.CommandsStorageService
+ services.commands.CommandsStorageService$1
 Bot.java
  Bot
  Bot$States
-services/commands/CommandsService.java
- services.commands.CommandsService
+services/roll/RollService.java
+ services.roll.RollService
+ services.roll.RollService$WrongNumberOfRollsException
+dataObjects/ReactionRollEvent.java
+ dataObjects.ReactionRollEvent

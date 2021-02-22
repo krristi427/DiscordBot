@@ -15,7 +15,7 @@
   "explanation": "Play with friends and see who is the first to buzz"
 }, {
   "name": "plotUglyDiagram",
-  "explanation": "Plots an ugly diagram."
+  "explanation": "Plots an ugly diagram. (Old command. Will be removed in later versions)"
 }, {
   "name": "plotDiagram",
   "explanation": "Plots the results of a poll in a readable manner. There are 3 plotting types (raw, bar and pie), give one of them as an argument."

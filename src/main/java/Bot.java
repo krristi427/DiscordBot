@@ -8,7 +8,9 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.requests.RestAction;
 import org.jetbrains.annotations.NotNull;
 import services.audio.Sound;
 import services.authorisation.AuthorisationService;
@@ -17,8 +19,11 @@ import services.greeting.GreetingService;
 import services.joke.JokeService;
 import services.plotting.PlottingService;
 import services.poll.PollingService;
+import services.reactionHandelingService.ReactionHandelingService;
+import services.roll.RollService;
 
 
+import javax.annotation.Nonnull;
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
 import java.nio.channels.Channel;
@@ -35,7 +40,9 @@ public class Bot extends ListenerAdapter {
 
     private static States state = States.EMPTY;
     private static String prefix = "!";
+
     PollingService pollingService = new PollingService();
+    ReactionHandelingService reactionHandelingService = new ReactionHandelingService();
 
 
     public static void main(String[] args) throws LoginException {
@@ -128,7 +135,31 @@ public class Bot extends ListenerAdapter {
         }
     }
 
+    @Override
+    public void onMessageReactionAdd(@Nonnull MessageReactionAddEvent event) {
+
+        try{
+            log.info("Received message with text: {}", event.toString());
+            handleReactionMessage(event);
+
+        } catch (Exception e){
+            log.warn("Could not process message", e);
+            e.printStackTrace();
+        }
+    }
+
+    private void handleReactionMessage(MessageReactionAddEvent event) {
+        if (event.getUser().isBot()) return;
+        if (event.getMember().getUser().equals(event.getChannel().getHistory().getMessageById(event.getMessageId()).getAuthor())) return;
+        MessageChannel channel = event.getChannel();
+        //Attention Imported: This Servic handels all reactions that are based on what chanel we are in or what type of message this is.
+        reactionHandelingService.handel(event);
+
+
+    }
+
     private void handleGuildMessage(GuildMessageReceivedEvent event) {
+
 
         String[] content = event.getMessage().getContentRaw().split(" ");
         String command = content[0];
@@ -284,8 +315,7 @@ public class Bot extends ListenerAdapter {
 
                     if(content.length>1)
                     {
-
-
+                        pollingService.startpoll(content,channel);
                     }
                     else
                         sendErrorMessage("Error: Please mind the syntax",channel);
@@ -351,6 +381,26 @@ public class Bot extends ListenerAdapter {
                         log.error("Unexpected Error occurred: ");
                         e.printStackTrace();
                     }
+                    break;
+                }
+                //BEGIN RollService
+                case("startnumberedreactionrolls"):
+                case("snrr"):
+                {
+                    if(content.length>1)
+                    {
+                        ArrayList<String> rolls=new ArrayList<>();
+                        for(int i=2; i<content.length;i++)
+                            rolls.add(content[i]);
+                        try {
+                            RollService.getInstance().startNumberedReactionRollEvent(rolls,content[1],channel);
+                        } catch (RollService.WrongNumberOfRollsException e) {
+                            sendErrorMessage("Sorry but its only possible to have 10 different rolls for a numbered reaction roll event.\n"+e.value,channel);
+
+                        }
+                    }
+                    else
+                        sendErrorMessage("Error: Please mind the syntax",channel);
                     break;
                 }
 
