@@ -53,16 +53,19 @@ public class ReactionRollEvent {
         EmbedBuilder info = new EmbedBuilder();
         info.setColor(0xdb00ff);
 
-        info.setTitle("Wähle deine Rolle für"+eventName+":");
+        info.setTitle("Wähle deine Rolle für "+eventName+":");
         info.addField(new MessageEmbed.Field("","Reagiere mit einem Emoji um der entsprechenden Rolle zugewiesen zu werden",false));
         String content = "";
         for (int i=0; i<rolls.size(); i++)
             content+="Drücke "+rollEmojis.get(i)+" um der Rolle "+rolls.get(i)+" zugewiesen zu werden.\n";
         info.addField(new MessageEmbed.Field("",content,false));
+        info.setFooter("ID: "+id);
+        info.setAuthor("this-bot");
         channel.sendMessage(info.build()).queue((message) -> {
-            for (int i=0; i<rolls.size(); i++)
+            for (int i=rolls.size()-1; i>=0; i--)
                 message.addReaction(rollEmojis.get(i)).queue();
-            info.setFooter("ID: "+id);
+                id = message.getId();
+
         });
 
 

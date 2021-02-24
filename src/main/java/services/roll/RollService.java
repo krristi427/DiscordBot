@@ -66,24 +66,39 @@ public class RollService {
 
         String eventID = event.getMessageId();
         int i;
+        boolean found = false;
         for (i=0;i<events.size();i++) {
-            if (events.get(i).getId()==eventID)
+
+            if (events.get(i).getId().equals(eventID))
+            {
+                found = true;
                 break;
+            }
+
         }
-        if(i==events.size()) {
-            System.out.println("Da fehler sein id: "+eventID);
+        if(i==events.size() && !found) {
+            System.out.println("Alle Einträge durchsucht Event nicht nichfunden: "+eventID); //TODO this should be a log
             return;
         }
         ArrayList<String> rolls = events.get(i).getRolls();
         ArrayList<String> rollEmojis = events.get(i).getRollEmojis();
         int j;
+        found = false;
         for (j=0;j< events.size();j++)
         {
             if(rollEmojis.get(i).equals(emoji))
+            {
+                found = true;
                 break;
+            }
+
         }
-        System.out.println("try to give "+event.getGuild().getRolesByName(rolls.get(j),true).get(0).getName()+" to "+event.getMember().getNickname());
-        event.getGuild().addRoleToMember(event.getMember(),event.getGuild().getRolesByName(rolls.get(j),true).get(0));
+        if(i==events.size() && !found) {
+            System.out.println("Alle Einträge durchsucht Emoji nicht nichfunden: "+emoji); //TODO this should be a log
+            return;
+        }
+
+        event.getGuild().addRoleToMember(event.getMember(), event.getGuild().getRolesByName(rolls.get(j),true).get(0)).queue();
     }
 
 
