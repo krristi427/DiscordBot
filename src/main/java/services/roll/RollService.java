@@ -63,11 +63,16 @@ public class RollService {
 
     public void react(String emoji, MessageReactionAddEvent event)
     {
-        String eventID = event.getChannel().getHistory().getMessageById(event.getMessageId()).getId(); //eventID == index of the event
+
+        String eventID = event.getMessageId();
         int i;
-        for (i=0;i< events.size();i++) {
+        for (i=0;i<events.size();i++) {
             if (events.get(i).getId()==eventID)
                 break;
+        }
+        if(i==events.size()) {
+            System.out.println("Da fehler sein id: "+eventID);
+            return;
         }
         ArrayList<String> rolls = events.get(i).getRolls();
         ArrayList<String> rollEmojis = events.get(i).getRollEmojis();

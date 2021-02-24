@@ -28,6 +28,7 @@ import javax.security.auth.login.LoginException;
 import java.io.IOException;
 import java.nio.channels.Channel;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 @Slf4j
@@ -150,7 +151,7 @@ public class Bot extends ListenerAdapter {
 
     private void handleReactionMessage(MessageReactionAddEvent event) {
         if (event.getUser().isBot()) return;
-        if (event.getMember().getUser().equals(event.getChannel().getHistory().getMessageById(event.getMessageId()).getAuthor())) return;
+        if (event.getMember().getUser().equals(event.getChannel().retrieveMessageById(event.getMessageId()).complete().getAuthor())) return;
         MessageChannel channel = event.getChannel();
         //Attention Imported: This Servic handels all reactions that are based on what chanel we are in or what type of message this is.
         reactionHandelingService.handel(event);
@@ -410,6 +411,49 @@ public class Bot extends ListenerAdapter {
                     JokeService.getInstance().getJoke(channel);
                     break;
                 }
+
+                //BEGIN MiscService
+                case ("clear"):
+                {
+                    if(content.length>1 && (content[1].matches("-?\\d+")||content[1].equals("all")))
+                    {
+
+                        if(content[1].equals("all")) { // DO NOT USE ITS VERY BUGY AND THERE FOR LEAK INTENSIV. TODO make faster :)
+                            List<Message> messages;
+
+                            while (true){
+                                 messages = channel.getHistory().retrievePast(100).complete();
+                                 if(messages.isEmpty())
+                                     break;
+                                 for (Message msg : messages) {
+                                    msg.delete().queue();
+
+                                 }
+                            };
+                        }
+                        else {
+
+
+                            int n = Integer.parseInt(content[1])+1;
+                            if (n > 100) {
+                                sendErrorMessage("Can only delete 99 msg at a time", channel);
+                            } else {
+                                List<Message> messages = channel.getHistory().retrievePast(n).complete();
+                                for (Message msg : messages) {
+                                    msg.delete().queue();
+                                }
+                            }
+                        }
+
+
+                    }
+                    else
+                        sendErrorMessage("Error: Please mind the syntax",channel);
+
+
+                    break;
+                }
+
 
                 //END SERVICES
 

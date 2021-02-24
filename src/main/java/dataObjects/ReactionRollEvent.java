@@ -52,7 +52,7 @@ public class ReactionRollEvent {
     public void printEvent(MessageChannel channel){
         EmbedBuilder info = new EmbedBuilder();
         info.setColor(0xdb00ff);
-        info.setFooter("ID: "+id);
+
         info.setTitle("Wähle deine Rolle für"+eventName+":");
         info.addField(new MessageEmbed.Field("","Reagiere mit einem Emoji um der entsprechenden Rolle zugewiesen zu werden",false));
         String content = "";
@@ -62,6 +62,7 @@ public class ReactionRollEvent {
         channel.sendMessage(info.build()).queue((message) -> {
             for (int i=0; i<rolls.size(); i++)
                 message.addReaction(rollEmojis.get(i)).queue();
+            info.setFooter("ID: "+id);
         });
 
 
