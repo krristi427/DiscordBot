@@ -1,16 +1,19 @@
 package services.reactionHandelingService;
 
-import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
+import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent;
 import services.roll.RollService;
 
 public class ReactionHandelingService {
 
-    public void handel(MessageReactionAddEvent event)
-    {
+    public void handleAdd(MessageReactionAddEvent event) throws RollService.MassageNotFoundException {
         //TODO finde herraus was für ein Typ die nachricht hat auf die Reagiert wurde. Also Poll oder ReactionRollEvent
-        RollService.getInstance().react(event.getReactionEmote().getName(),event);
+        RollService.getInstance().getRoll(event.getReactionEmote().getName(),event);
 
     }
+    public void handleRemove(MessageReactionRemoveEvent event) throws RollService.MassageNotFoundException {
+        //TODO finde herraus was für ein Typ die nachricht hat auf die Reagiert wurde. Also Poll oder ReactionRollEvent
+        RollService.getInstance().loseRoll(event.getReactionEmote().getName(),event);
 
+    }
 }

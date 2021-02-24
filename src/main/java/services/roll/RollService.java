@@ -2,10 +2,9 @@ package services.roll;
 
 import dataObjects.ReactionRollEvent;
 import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
+import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent;
 import org.jetbrains.annotations.NotNull;
-import services.greeting.GreetingService;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -62,10 +61,18 @@ public class RollService {
         startPersonalReactionRollEvent(rolls,rollEmojis, authorsName, name, channel);
     }
 
-    public void react(String emoji, MessageReactionAddEvent event)
-    {
+    public void getRoll(String emoji, MessageReactionAddEvent event) throws MassageNotFoundException {
+        String roll = getMatchingRoll(emoji, event.getMessageId());
+        event.getGuild().addRoleToMember(event.getUserId(), event.getGuild().getRolesByName(roll,true).get(0)).queue();
+    }
 
-        String eventID = event.getMessageId();
+    public void loseRoll(String emoji, MessageReactionRemoveEvent event) throws MassageNotFoundException {
+        String roll = getMatchingRoll(emoji, event.getMessageId());
+        event.getGuild().removeRoleFromMember(event.getUserId(), event.getGuild().getRolesByName(roll,true).get(0)).queue();
+    }
+
+    private String getMatchingRoll(String emoji, String messageId) throws MassageNotFoundException {
+        String eventID = messageId;
         int i;
         boolean found = false;
         for (i=0;i<events.size();i++) {
@@ -78,8 +85,7 @@ public class RollService {
 
         }
         if(i==events.size() && !found) {
-            System.out.println("Alle Einträge durchsucht Event nicht nichfunden: "+eventID); //TODO this should be a log
-            return;
+            throw new MassageNotFoundException(eventID,"Message");
         }
         ArrayList<String> rolls = events.get(i).getRolls();
         ArrayList<String> rollEmojis = events.get(i).getRollEmojis();
@@ -95,13 +101,11 @@ public class RollService {
 
         }
         if(i==events.size() && !found) {
-            System.out.println("Alle Einträge durchsucht Emoji nicht nichfunden: "+emoji); //TODO this should be a log
-            return;
+            throw new MassageNotFoundException(emoji,"Emoji");
         }
+        return rolls.get(j);
 
-        event.getGuild().addRoleToMember(event.getMember(), event.getGuild().getRolesByName(rolls.get(j),true).get(0)).queue();
     }
-
 
 
     public class WrongNumberOfRollsException extends Exception
@@ -110,6 +114,17 @@ public class RollService {
         WrongNumberOfRollsException(String value)
         {
             this.value = value;
+        }
+    }
+
+    public class MassageNotFoundException extends Exception
+    {
+        public String value;
+        public String typ;
+        MassageNotFoundException(String value, String typ)
+        {
+            this.value = value;
+            this.typ = typ;
         }
     }
 }

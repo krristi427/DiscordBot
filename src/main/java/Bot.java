@@ -9,8 +9,8 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
+import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.requests.RestAction;
 import org.jetbrains.annotations.NotNull;
 import services.audio.Sound;
 import services.authorisation.AuthorisationService;
@@ -26,7 +26,6 @@ import services.roll.RollService;
 import javax.annotation.Nonnull;
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
-import java.nio.channels.Channel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -141,7 +140,7 @@ public class Bot extends ListenerAdapter {
 
         try{
             log.info("Received message with text: {}", event.toString());
-            handleReactionMessage(event);
+            handleReactionAdd(event);
 
         } catch (Exception e){
             log.warn("Could not process message", e);
@@ -149,12 +148,42 @@ public class Bot extends ListenerAdapter {
         }
     }
 
-    private void handleReactionMessage(MessageReactionAddEvent event) {
+    @Override
+    public void onMessageReactionRemove(MessageReactionRemoveEvent event){
+        try{
+            log.info("Received message with text: {}", event.toString());
+            handleReactionRemove(event);
+
+        } catch (Exception e){
+            log.warn("Could not process message", e);
+            e.printStackTrace();
+        }
+    }
+
+    private void handleReactionRemove(MessageReactionRemoveEvent event){
+        //Its not suported that bots remove Reactions TODO think about if that is a good idea. It is possible in a eatch ?
+        //if (event.getMember().getUser().equals(event.getChannel().retrieveMessageById(event.getMessageId()).complete().getAuthor())) return;
+        MessageChannel channel = event.getChannel();
+        //Attention Important: This Servic handels all reactions that are based on what chanel we are in or what type of message this is.
+        try {
+            reactionHandelingService.handleRemove(event);
+        }
+        catch (RollService.MassageNotFoundException e){
+            System.out.println("Alle Einträge durchsucht Emoji nicht nichfunden: "+e.value);
+        }
+    }
+
+    private void handleReactionAdd(MessageReactionAddEvent event) {
         if (event.getUser().isBot()) return;
         if (event.getMember().getUser().equals(event.getChannel().retrieveMessageById(event.getMessageId()).complete().getAuthor())) return;
         MessageChannel channel = event.getChannel();
-        //Attention Imported: This Servic handels all reactions that are based on what chanel we are in or what type of message this is.
-        reactionHandelingService.handel(event);
+        //Attention Important: This Servic handels all reactions that are based on what chanel we are in or what type of message this is.
+        try {
+        reactionHandelingService.handleAdd(event);
+        }
+        catch (RollService.MassageNotFoundException e){
+                log.info("Alle Einträge durchsucht "+e.typ+" nicht nichfunden: "+e.value);
+        }
 
 
     }

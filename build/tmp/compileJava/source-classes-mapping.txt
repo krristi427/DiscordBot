@@ -12,9 +12,8 @@ services/commands/CommandsService.java
 services/joke/JokeService.java
  services.joke.JokeService
  services.joke.JokeService$1
-services/commands/CommandsStorageService.java
- services.commands.CommandsStorageService
- services.commands.CommandsStorageService$1
+dataObjects/ReactionRollEvent.java
+ dataObjects.ReactionRollEvent
 services/quiz/QuizService.java
  services.quiz.QuizService
 dataObjects/AuthorisationPair.java
@@ -45,8 +44,9 @@ services/audio/GuildMusicManager.java
  services.audio.GuildMusicManager
 services/audio/AudioPlayerSendHandler.java
  services.audio.AudioPlayerSendHandler
-dataObjects/ReactionRollEvent.java
- dataObjects.ReactionRollEvent
+services/commands/CommandsStorageService.java
+ services.commands.CommandsStorageService
+ services.commands.CommandsStorageService$1
 Bot.java
  Bot
  Bot$States
@@ -54,4 +54,5 @@ services/reactionHandelingService/ReactionHandelingService.java
  services.reactionHandelingService.ReactionHandelingService
 services/roll/RollService.java
  services.roll.RollService
+ services.roll.RollService$MassageNotFoundException
  services.roll.RollService$WrongNumberOfRollsException
