@@ -23,7 +23,7 @@ public class RollService {
         //well yes it dose whats intended to do.
     }
 
-    public void startPersonalReactionRollEvent( @NotNull ArrayList<String> rolls, ArrayList<String> rollEmojis, String name, MessageChannel channel, String authorsName) throws WrongNumberOfRollsException {
+    public void startPersonalReactionRollEvent( @NotNull ArrayList<String> rolls, ArrayList<String> rollEmojis, String authorsName, String name, MessageChannel channel) throws WrongNumberOfRollsException {
         if(rolls.size()!=rollEmojis.size()||rolls.size()<1)
             throw new WrongNumberOfRollsException("rolls.size: "+rolls.size()+" or rollEmojis.size: "+rollEmojis.size()+" was unexpected");
         ReactionRollEvent event = new ReactionRollEvent(rolls,rollEmojis,name,authorsName);
@@ -59,7 +59,7 @@ public class RollService {
                 rollEmojis.add("1️⃣");
         } //well yes that's right because of ne breaks;
         Collections.reverse(rollEmojis);
-        startPersonalReactionRollEvent(rolls,rollEmojis,name,channel, authorsName);
+        startPersonalReactionRollEvent(rolls,rollEmojis, authorsName, name, channel);
     }
 
     public void react(String emoji, MessageReactionAddEvent event)

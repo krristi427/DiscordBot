@@ -404,6 +404,30 @@ public class Bot extends ListenerAdapter {
                         sendErrorMessage("Error: Please mind the syntax",channel);
                     break;
                 }
+                case("starteactionrolls"):
+                case("srr"):
+                {
+                    if(content.length>1)
+                    {
+                        ArrayList<String> rolls=new ArrayList<>();
+                        ArrayList<String> rollEmojis=new ArrayList<>();
+                        String[] split;
+                        for(int i=2; i<content.length;i++) {
+                            split = content[i].split(":");
+                            rolls.add(split[0]);
+                            rollEmojis.add(split[1]);
+                        }
+                        try {
+                            RollService.getInstance().startPersonalReactionRollEvent(rolls,rollEmojis,content[1],message.getAuthor().getName(),channel);
+                        } catch (RollService.WrongNumberOfRollsException e) {
+                            sendErrorMessage("Sorry but its only possible to have 10 different rolls for a numbered reaction roll event.\n"+e.value,channel);
+
+                        }
+                    }
+                    else
+                        sendErrorMessage("Error: Please mind the syntax",channel);
+                    break;
+                }
 
                 //BEGIN JokeService
                 case("joke"):
