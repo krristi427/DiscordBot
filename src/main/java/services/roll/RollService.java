@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import services.greeting.GreetingService;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class RollService {
 
@@ -22,15 +23,15 @@ public class RollService {
         //well yes it dose whats intended to do.
     }
 
-    public void startPersonalReactionRollEvent( @NotNull ArrayList<String> rolls, ArrayList<String> rollEmojis, String name, MessageChannel channel) throws WrongNumberOfRollsException {
+    public void startPersonalReactionRollEvent( @NotNull ArrayList<String> rolls, ArrayList<String> rollEmojis, String name, MessageChannel channel, String authorsName) throws WrongNumberOfRollsException {
         if(rolls.size()!=rollEmojis.size()||rolls.size()<1)
             throw new WrongNumberOfRollsException("rolls.size: "+rolls.size()+" or rollEmojis.size: "+rollEmojis.size()+" was unexpected");
-        ReactionRollEvent event = new ReactionRollEvent(rolls,rollEmojis,name);
+        ReactionRollEvent event = new ReactionRollEvent(rolls,rollEmojis,name,authorsName);
         events.add(event);
         event.printEvent(channel);
     }
 
-    public void startNumberedReactionRollEvent( @NotNull ArrayList<String> rolls,String name ,MessageChannel channel) throws WrongNumberOfRollsException {
+    public void startNumberedReactionRollEvent( @NotNull ArrayList<String> rolls, String name, String authorsName, MessageChannel channel) throws WrongNumberOfRollsException {
         if(rolls.size()>10||rolls.size()<1)
             throw new WrongNumberOfRollsException("rolls.size: "+rolls.size()+" was unexpected");
         ArrayList<String> rollEmojis = new ArrayList<>();
@@ -57,8 +58,8 @@ public class RollService {
             case(1):
                 rollEmojis.add("1️⃣");
         } //well yes that's right because of ne breaks;
-
-        startPersonalReactionRollEvent(rolls,rollEmojis,name,channel);
+        Collections.reverse(rollEmojis);
+        startPersonalReactionRollEvent(rolls,rollEmojis,name,channel, authorsName);
     }
 
     public void react(String emoji, MessageReactionAddEvent event)

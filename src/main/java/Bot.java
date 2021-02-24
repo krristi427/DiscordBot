@@ -394,7 +394,7 @@ public class Bot extends ListenerAdapter {
                         for(int i=2; i<content.length;i++)
                             rolls.add(content[i]);
                         try {
-                            RollService.getInstance().startNumberedReactionRollEvent(rolls,content[1],channel);
+                            RollService.getInstance().startNumberedReactionRollEvent(rolls,content[1],message.getAuthor().getName(),channel);
                         } catch (RollService.WrongNumberOfRollsException e) {
                             sendErrorMessage("Sorry but its only possible to have 10 different rolls for a numbered reaction roll event.\n"+e.value,channel);
 

@@ -1,8 +1,6 @@
 package dataObjects;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
@@ -13,12 +11,13 @@ public class ReactionRollEvent {
     private ArrayList<String> rollEmojis;
     private String eventName;
     private String id;
+    private String authorsName;
 
-    public ReactionRollEvent(ArrayList<String> rolls, ArrayList<String> rollEmojis, String eventName) {
+    public ReactionRollEvent(ArrayList<String> rolls, ArrayList<String> rollEmojis, String eventName, String authorsName) {
         this.rolls = rolls;
         this.eventName = eventName;
         this.rollEmojis = rollEmojis;
-
+        this.authorsName = authorsName;
     }
 
     public ArrayList<String> getRolls() {
@@ -54,15 +53,14 @@ public class ReactionRollEvent {
         info.setColor(0xdb00ff);
 
         info.setTitle("Wähle deine Rolle für "+eventName+":");
-        info.addField(new MessageEmbed.Field("","Reagiere mit einem Emoji um der entsprechenden Rolle zugewiesen zu werden",false));
+        info.setFooter("Reagiere mit einem Emoji um der entsprechenden Rolle zugewiesen zu werden");
         String content = "";
         for (int i=0; i<rolls.size(); i++)
             content+="Drücke "+rollEmojis.get(i)+" um der Rolle "+rolls.get(i)+" zugewiesen zu werden.\n";
-        info.addField(new MessageEmbed.Field("",content,false));
-        info.setFooter("ID: "+id);
-        info.setAuthor("this-bot");
+        info.setDescription(content);
+        info.setAuthor("Ersteller: "+authorsName);
         channel.sendMessage(info.build()).queue((message) -> {
-            for (int i=rolls.size()-1; i>=0; i--)
+            for (int i=0; i<rolls.size(); i++)
                 message.addReaction(rollEmojis.get(i)).queue();
                 id = message.getId();
 

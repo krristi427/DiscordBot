@@ -45,11 +45,11 @@ services/audio/GuildMusicManager.java
  services.audio.GuildMusicManager
 services/audio/AudioPlayerSendHandler.java
  services.audio.AudioPlayerSendHandler
+services/reactionHandelingService/ReactionHandelingService.java
+ services.reactionHandelingService.ReactionHandelingService
 Bot.java
  Bot
  Bot$States
-services/reactionHandelingService/ReactionHandelingService.java
- services.reactionHandelingService.ReactionHandelingService
 services/roll/RollService.java
  services.roll.RollService
  services.roll.RollService$WrongNumberOfRollsException
