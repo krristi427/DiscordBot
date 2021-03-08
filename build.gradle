@@ -33,6 +33,9 @@ dependencies {
 
     //OkHTTP
     compile group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.9.0'
+
+    //Reflections
+    implementation group: 'org.reflections', name: 'reflections', version: '0.9.12'
 }
 
 test {

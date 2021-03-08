@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Locale;
 
 @Slf4j
-public class Bot extends ListenerAdapter {
+public class Bot extends ListenerAdapter implements Subject {
 
     //TODO find a way to silence the handleMessage Method while requesting to play music
 
@@ -43,6 +43,38 @@ public class Bot extends ListenerAdapter {
     PollingService pollingService = new PollingService();
     ReactionHandelingService reactionHandelingService = new ReactionHandelingService();
 
+    private List<Observer> observers = new ArrayList<>();
+
+    @Override
+    public void registerObserver(Observer observer) {
+
+
+    }
+
+    @Override
+    public void removeObserver(Observer observer) {
+
+    }
+
+    @Override
+    public void notifyObservers(MessageReceivedEvent event) {
+
+    }
+
+    @Override
+    public void notifyObservers(GuildMessageReceivedEvent event) {
+
+    }
+
+    @Override
+    public void notifyObservers(MessageReactionAddEvent event) {
+
+    }
+
+    @Override
+    public void notifyObservers(MessageReactionRemoveEvent event) {
+
+    }
 
     public static void main(String[] args) throws LoginException {
         JDABuilder jdaBuilder = JDABuilder.createDefault("Nzg2MTQ1NTI0ODA5NzI4MDAw.X9CJEg._DielBHtcMZnGsG4hqcpKV0KceA");
