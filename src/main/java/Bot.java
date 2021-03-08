@@ -37,7 +37,6 @@ public class Bot extends ListenerAdapter {
 
     private enum States{EMPTY,BUZZIG,POLL};
 
-
     private static States state = States.EMPTY;
     private static String prefix = "!";
 
@@ -63,6 +62,7 @@ public class Bot extends ListenerAdapter {
         info.setDescription(message);
         channel.sendMessage(info.build()).queue();
     }
+
     private void sendMessage(String message, String title, MessageChannel channel)
     {
         EmbedBuilder info = new EmbedBuilder();
@@ -71,6 +71,7 @@ public class Bot extends ListenerAdapter {
         info.setDescription(message);
         channel.sendMessage(info.build()).queue();
     }
+
     private void sendMessage(String message, int color, MessageChannel channel)
     {
         EmbedBuilder info = new EmbedBuilder();
@@ -78,6 +79,7 @@ public class Bot extends ListenerAdapter {
         info.setDescription(message);
         channel.sendMessage(info.build()).queue();
     }
+
     private void sendMessage(String message, MessageChannel channel)
     {
         EmbedBuilder info = new EmbedBuilder();
@@ -85,6 +87,7 @@ public class Bot extends ListenerAdapter {
         info.setDescription(message);
         channel.sendMessage(info.build()).queue();
     }
+
     private void sendInfoMessage(String message, MessageChannel channel)
     {
         EmbedBuilder info = new EmbedBuilder();
@@ -92,6 +95,7 @@ public class Bot extends ListenerAdapter {
         info.setDescription(message);
         channel.sendMessage(info.build()).queue();
     }
+
     private void sendErrorMessage(String message, MessageChannel channel)
     {
         EmbedBuilder info = new EmbedBuilder();
@@ -99,6 +103,7 @@ public class Bot extends ListenerAdapter {
         info.setDescription(message);
         channel.sendMessage(info.build()).queue();
     }
+
     private void sendTextMessage(String message, MessageChannel channel)
     {
         EmbedBuilder info = new EmbedBuilder();
@@ -149,7 +154,7 @@ public class Bot extends ListenerAdapter {
     }
 
     @Override
-    public void onMessageReactionRemove(MessageReactionRemoveEvent event){
+    public void onMessageReactionRemove(@NotNull MessageReactionRemoveEvent event){
         try{
             log.info("Received message with text: {}", event.toString());
             handleReactionRemove(event);
@@ -168,6 +173,7 @@ public class Bot extends ListenerAdapter {
         try {
             reactionHandelingService.handleRemove(event);
         }
+        //TODO check spelling
         catch (RollService.MassageNotFoundException e){
             System.out.println("Alle Einträge durchsucht Emoji nicht nichfunden: "+e.value);
         }
@@ -179,17 +185,15 @@ public class Bot extends ListenerAdapter {
         MessageChannel channel = event.getChannel();
         //Attention Important: This Servic handels all reactions that are based on what chanel we are in or what type of message this is.
         try {
-        reactionHandelingService.handleAdd(event);
+            reactionHandelingService.handleAdd(event);
         }
+        //TODO check spelling
         catch (RollService.MassageNotFoundException e){
                 log.info("Alle Einträge durchsucht "+e.typ+" nicht nichfunden: "+e.value);
         }
-
-
     }
 
     private void handleGuildMessage(GuildMessageReceivedEvent event) {
-
 
         String[] content = event.getMessage().getContentRaw().split(" ");
         String command = content[0];
@@ -221,9 +225,6 @@ public class Bot extends ListenerAdapter {
             super.onGuildMessageReceived(event);
         }
     }
-
-
-
 
     private void handleMessage(MessageReceivedEvent event) {
 
@@ -419,6 +420,7 @@ public class Bot extends ListenerAdapter {
                 {
                     if(content.length>1)
                     {
+                        //TODO static type to List...provides more possibilities
                         ArrayList<String> rolls=new ArrayList<>();
                         for(int i=2; i<content.length;i++)
                             rolls.add(content[i]);
