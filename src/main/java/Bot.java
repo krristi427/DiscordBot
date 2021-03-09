@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
+import org.reflections.Reflections;
 import services.Observer;
 import services.Subject;
 import services.audio.Sound;
@@ -27,9 +28,11 @@ import services.roll.RollService;
 import javax.annotation.Nonnull;
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 @Slf4j
 public class Bot extends ListenerAdapter implements Subject {
@@ -61,15 +64,17 @@ public class Bot extends ListenerAdapter implements Subject {
     public void fillObservers() {
 
         //needs folder boi
-        /*Reflections reflections = new Reflections("services");
+        Reflections reflections = new Reflections("services");
         Set<Class<? extends Observer>> observerTypes = reflections.getSubTypesOf(Observer.class);
 
-        System.out.println("SIZE: " + observerTypes.size());
         observerTypes.forEach(aClass -> {
-
-            Observer bClass = aClass.cast(aClass);
-            observers.add(bClass);
-        });*/
+            try {
+                Observer o = (Observer) Class.forName(aClass.getName()).getDeclaredConstructor().newInstance();
+                observers.add(o);
+            } catch (InstantiationException | IllegalAccessException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     @Override
@@ -167,7 +172,7 @@ public class Bot extends ListenerAdapter implements Subject {
         try{
             log.info("Received message with text: {}", event.getMessage().getContentRaw());
             notifyObservers(event);
-            //handleMessage(event);
+            handleMessage(event);
 
         } catch (Exception e){
             log.warn("Could not process message", e);
