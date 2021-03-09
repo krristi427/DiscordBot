@@ -12,6 +12,9 @@ import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
+import org.reflections.Reflections;
+import services.Observer;
+import services.Subject;
 import services.audio.Sound;
 import services.authorisation.AuthorisationService;
 import services.commands.CommandsService;
@@ -29,6 +32,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 @Slf4j
 public class Bot extends ListenerAdapter implements Subject {
@@ -43,37 +47,50 @@ public class Bot extends ListenerAdapter implements Subject {
     PollingService pollingService = new PollingService();
     ReactionHandelingService reactionHandelingService = new ReactionHandelingService();
 
-    private List<Observer> observers = new ArrayList<>();
+    public List<Observer> observers = new ArrayList<>();
 
     @Override
     public void registerObserver(Observer observer) {
 
-
+        observers.add(observer);
     }
 
     @Override
     public void removeObserver(Observer observer) {
 
+        observers.remove(observer);
+    }
+
+    public void fillObservers() {
+
+        Reflections reflections = new Reflections("src.main.java.services");
+        Set<Class<? extends Observer>> observerTypes = reflections.getSubTypesOf(Observer.class);
+
+        System.out.println("SIZE: " + observerTypes.size());
+        observerTypes.forEach(aClass -> {
+            Observer bClass = aClass.cast(aClass);
+            observers.add(bClass);
+        });
     }
 
     @Override
     public void notifyObservers(MessageReceivedEvent event) {
-
+        observers.forEach(observer -> observer.update(event));
     }
 
     @Override
     public void notifyObservers(GuildMessageReceivedEvent event) {
-
+        observers.forEach(observer -> observer.update(event));
     }
 
     @Override
     public void notifyObservers(MessageReactionAddEvent event) {
-
+        observers.forEach(observer -> observer.update(event));
     }
 
     @Override
     public void notifyObservers(MessageReactionRemoveEvent event) {
-
+        observers.forEach(observer -> observer.update(event));
     }
 
     public static void main(String[] args) throws LoginException {
@@ -84,6 +101,7 @@ public class Bot extends ListenerAdapter implements Subject {
         Bot b = new Bot();
         build.addEventListener(b);
         jdaBuilder.setActivity(Activity.playing("type "+prefix+"help to get help"));
+        b.fillObservers();
     }
 
     private void sendMessage(String message, String title,  int color, MessageChannel channel)
@@ -149,7 +167,8 @@ public class Bot extends ListenerAdapter implements Subject {
 
         try{
             log.info("Received message with text: {}", event.getMessage().getContentRaw());
-            handleMessage(event);
+            notifyObservers(event);
+            //handleMessage(event);
 
         } catch (Exception e){
             log.warn("Could not process message", e);

@@ -2,31 +2,30 @@ services/poll/PollingService.java
  services.poll.PollingService
  services.poll.PollingService$WrongPollingTypException
  services.poll.PollingService$WrongValueException
+services/audio/TrackScheduler.java
+ services.audio.TrackScheduler
 services/audio/Sound.java
  services.audio.Sound
  services.audio.Sound$1
-services/audio/TrackScheduler.java
- services.audio.TrackScheduler
 services/commands/CommandsService.java
  services.commands.CommandsService
 services/joke/JokeService.java
  services.joke.JokeService
  services.joke.JokeService$1
-services/commands/CommandsStorageService.java
- services.commands.CommandsStorageService
- services.commands.CommandsStorageService$1
-services/quiz/QuizService.java
- services.quiz.QuizService
+services/reactionHandelingService/ReactionHandelingService.java
+ services.reactionHandelingService.ReactionHandelingService
+services/roll/RollService.java
+ services.roll.RollService
+ services.roll.RollService$MassageNotFoundException
+ services.roll.RollService$WrongNumberOfRollsException
 dataObjects/AuthorisationPair.java
  dataObjects.AuthorisationPair
-services/greeting/GreetingsStorageService.java
- services.greeting.GreetingsStorageService
- services.greeting.GreetingsStorageService$1
 services/authorisation/AuthorisationService.java
  services.authorisation.AuthorisationService
  services.authorisation.AuthorisationService$1
-test.java
- test
+services/greeting/GreetingsStorageService.java
+ services.greeting.GreetingsStorageService
+ services.greeting.GreetingsStorageService$1
 dataObjects/Greeting.java
  dataObjects.Greeting
 services/plotting/PlottingService.java
@@ -37,26 +36,25 @@ dataObjects/Poll.java
  dataObjects.Poll$Pollingtypes
 dataObjects/Command.java
  dataObjects.Command
-services/greeting/GreetingService.java
- services.greeting.GreetingService
+services/quiz/QuizService.java
+ services.quiz.QuizService
 dataObjects/Possibility.java
  dataObjects.Possibility
 services/audio/GuildMusicManager.java
  services.audio.GuildMusicManager
 services/audio/AudioPlayerSendHandler.java
  services.audio.AudioPlayerSendHandler
+dataObjects/ReactionRollEvent.java
+ dataObjects.ReactionRollEvent
+services/commands/CommandsStorageService.java
+ services.commands.CommandsStorageService
+ services.commands.CommandsStorageService$1
+services/Observer.java
+ services.Observer
+services/greeting/GreetingService.java
+ services.greeting.GreetingService
+services/Subject.java
+ services.Subject
 Bot.java
  Bot
  Bot$States
-services/reactionHandelingService/ReactionHandelingService.java
- services.reactionHandelingService.ReactionHandelingService
-Observer.java
- Observer
-services/roll/RollService.java
- services.roll.RollService
- services.roll.RollService$MassageNotFoundException
- services.roll.RollService$WrongNumberOfRollsException
-Subject.java
- Subject
-dataObjects/ReactionRollEvent.java
- dataObjects.ReactionRollEvent
