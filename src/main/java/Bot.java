@@ -12,7 +12,6 @@ import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
-import org.reflections.Reflections;
 import services.Observer;
 import services.Subject;
 import services.audio.Sound;
@@ -25,14 +24,12 @@ import services.poll.PollingService;
 import services.reactionHandelingService.ReactionHandelingService;
 import services.roll.RollService;
 
-
 import javax.annotation.Nonnull;
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 @Slf4j
 public class Bot extends ListenerAdapter implements Subject {
@@ -63,14 +60,16 @@ public class Bot extends ListenerAdapter implements Subject {
 
     public void fillObservers() {
 
-        Reflections reflections = new Reflections("src.main.java.services");
+        //needs folder boi
+        /*Reflections reflections = new Reflections("services");
         Set<Class<? extends Observer>> observerTypes = reflections.getSubTypesOf(Observer.class);
 
         System.out.println("SIZE: " + observerTypes.size());
         observerTypes.forEach(aClass -> {
+
             Observer bClass = aClass.cast(aClass);
             observers.add(bClass);
-        });
+        });*/
     }
 
     @Override

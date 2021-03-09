@@ -1,7 +1,6 @@
-services/poll/PollingService.java
- services.poll.PollingService
- services.poll.PollingService$WrongPollingTypException
- services.poll.PollingService$WrongValueException
+Bot.java
+ Bot
+ Bot$States
 services/audio/TrackScheduler.java
  services.audio.TrackScheduler
 services/audio/Sound.java
@@ -20,6 +19,8 @@ services/roll/RollService.java
  services.roll.RollService$WrongNumberOfRollsException
 dataObjects/AuthorisationPair.java
  dataObjects.AuthorisationPair
+services/Observer.java
+ services.Observer
 services/authorisation/AuthorisationService.java
  services.authorisation.AuthorisationService
  services.authorisation.AuthorisationService$1
@@ -36,25 +37,24 @@ dataObjects/Poll.java
  dataObjects.Poll$Pollingtypes
 dataObjects/Command.java
  dataObjects.Command
-services/quiz/QuizService.java
- services.quiz.QuizService
+services/greeting/GreetingService.java
+ services.greeting.GreetingService
+services/Subject.java
+ services.Subject
 dataObjects/Possibility.java
  dataObjects.Possibility
 services/audio/GuildMusicManager.java
  services.audio.GuildMusicManager
 services/audio/AudioPlayerSendHandler.java
  services.audio.AudioPlayerSendHandler
-dataObjects/ReactionRollEvent.java
- dataObjects.ReactionRollEvent
 services/commands/CommandsStorageService.java
  services.commands.CommandsStorageService
  services.commands.CommandsStorageService$1
-services/Observer.java
- services.Observer
-services/greeting/GreetingService.java
- services.greeting.GreetingService
-services/Subject.java
- services.Subject
-Bot.java
- Bot
- Bot$States
+services/quiz/QuizService.java
+ services.quiz.QuizService
+dataObjects/ReactionRollEvent.java
+ dataObjects.ReactionRollEvent
+services/poll/PollingService.java
+ services.poll.PollingService
+ services.poll.PollingService$WrongPollingTypException
+ services.poll.PollingService$WrongValueException

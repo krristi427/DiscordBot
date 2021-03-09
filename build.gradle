@@ -19,7 +19,7 @@ dependencies {
     compile 'net.dv8tion:JDA:4.2.0_222'
 
     //Slf4j
-    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
+    implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30'
 
     //JUnit
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
