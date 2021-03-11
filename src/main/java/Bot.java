@@ -3,14 +3,17 @@ import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.internal.utils.PermissionUtil;
 import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 import services.Observer;
@@ -29,6 +32,9 @@ import javax.annotation.Nonnull;
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.UnknownServiceException;
+import java.security.PermissionCollection;
+import java.security.Permissions;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -48,6 +54,8 @@ public class Bot extends ListenerAdapter implements Subject {
     ReactionHandelingService reactionHandelingService = new ReactionHandelingService();
 
     public List<Observer> observers = new ArrayList<>();
+
+    private ArrayList<String> ignoreNameList = new ArrayList<>();
 
     @Override
     public void registerObserver(Observer observer) {
@@ -292,6 +300,11 @@ public class Bot extends ListenerAdapter implements Subject {
 
         if(command.startsWith(prefix)) {
             command = command.toLowerCase(Locale.ROOT).replace(prefix, "");
+
+            if(ignoreNameList.contains(message.getAuthor().getName())) { //ignores User in list
+                sendMessage("Mit dir rede ich nicht", channel);
+                return;
+            }
 
             switch (command) {
                 //BEGIN DefaultServices
@@ -561,6 +574,35 @@ public class Bot extends ListenerAdapter implements Subject {
                         sendErrorMessage("Error: Please mind the syntax",channel);
 
 
+                    break;
+                }
+
+                case ("ignore"):
+                {
+                    if(content.length>1)
+                    {
+                        String name = content[1];
+
+                        if(!event.getMember().hasPermission(Permission.BAN_MEMBERS)) //TODO wird so geändert, daskein admin ignoriert werden darf (schaffe es nicht einen Member anhand seines Namens zu fidnen).
+                            name = message.getAuthor().getName();
+                        ignoreNameList.add(name);
+                        sendInfoMessage(name+" wird ab jetzt ignoriert",channel);
+                    }
+                    else
+                        sendErrorMessage("Error: Please mind the syntax",channel);
+                    break;
+                }
+
+                case ("disignore"):
+                {
+                    if(content.length>1)
+                    {
+                        String name = content[1];
+                        ignoreNameList.remove(name);
+                        sendInfoMessage(name+" wird nicht länger ignoriert",channel);
+                    }
+                    else
+                        sendErrorMessage("Error: Please mind the syntax",channel);
                     break;
                 }
 
