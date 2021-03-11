@@ -18,7 +18,6 @@ import services.Subject;
 import services.audio.Sound;
 import services.authorisation.AuthorisationService;
 import services.commands.CommandsService;
-import services.joke.JokeService;
 import services.plotting.PlottingService;
 import services.poll.PollingService;
 import services.reactionHandelingService.ReactionHandelingService;
@@ -498,13 +497,6 @@ public class Bot extends ListenerAdapter implements Subject {
                     }
                     else
                         sendErrorMessage("Error: Please mind the syntax",channel);
-                    break;
-                }
-
-                //BEGIN JokeService
-                case("joke"):
-                {
-                    JokeService.getInstance().getJoke(channel);
                     break;
                 }
 
