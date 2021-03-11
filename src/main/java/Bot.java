@@ -15,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 import services.Observer;
 import services.Subject;
-import services.audio.Sound;
 import services.authorisation.AuthorisationService;
 import services.commands.CommandsService;
 import services.plotting.PlottingService;
@@ -181,8 +180,7 @@ public class Bot extends ListenerAdapter implements Subject {
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
 
         try{
-            log.info("Received message with text: {}", event.getMessage().getContentRaw());
-            handleGuildMessage(event);
+            notifyObservers(event);
 
         } catch (Exception e){
             log.warn("Could not process message", e);
@@ -241,39 +239,6 @@ public class Bot extends ListenerAdapter implements Subject {
         //TODO check spelling
         catch (RollService.MassageNotFoundException e){
                 log.info("Alle Einträge durchsucht "+e.typ+" nicht nichfunden: "+e.value);
-        }
-    }
-
-    private void handleGuildMessage(GuildMessageReceivedEvent event) {
-
-        String[] content = event.getMessage().getContentRaw().split(" ");
-        String command = content[0];
-        if(command.startsWith(prefix)) {
-            command = command.toLowerCase(Locale.ROOT).replace(prefix, "");
-
-            switch (command) {
-                case ("play") -> {
-                    Sound.getInstance().loadAndPlay(event.getChannel(), content[1]);
-                    break;
-                }
-                case ("pause") -> {
-                    Sound.getInstance().pauseTrack(event.getChannel());
-                    break;
-                }
-                case ("resume") -> {
-                    Sound.getInstance().resumeTrack(event.getChannel());
-                    break;
-                }
-                case ("stop") -> {
-                    Sound.getInstance().stopPlaying(event.getChannel());
-                    break;
-                }
-                case ("currentQueue") -> {
-                    Sound.getInstance().currentQueue(event.getChannel());
-                    break;
-                }
-            }
-            super.onGuildMessageReceived(event);
         }
     }
 

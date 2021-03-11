@@ -11,12 +11,18 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.VoiceChannel;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
+import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent;
 import net.dv8tion.jda.api.managers.AudioManager;
+import services.Observer;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
-public class Sound {
+public class Sound implements Observer {
 
     public static final Sound instance = new Sound();
     public static final Sound getInstance() {
@@ -26,7 +32,8 @@ public class Sound {
     private final AudioPlayerManager playerManager;
     private final Map<Long, GuildMusicManager> musicManagers;
 
-    private Sound() {
+    //TODO add functionality to disconnect from voice channel
+    public Sound() {
         this.musicManagers = new HashMap<>();
 
         this.playerManager = new DefaultAudioPlayerManager();
@@ -141,5 +148,39 @@ public class Sound {
                 break;
             }
         }
+    }
+
+    @Override
+    public void update(MessageReceivedEvent event) {
+
+    }
+
+    @Override
+    public void update(GuildMessageReceivedEvent event) {
+
+        String[] content = event.getMessage().getContentRaw().split(" ");
+        String command = content[0];
+        if(command.startsWith("!")) {
+            command = command.toLowerCase(Locale.ROOT).replace("!", "");
+
+            switch (command) {
+                case ("play") -> loadAndPlay(event.getChannel(), content[1]);
+                case ("pause") -> pauseTrack(event.getChannel());
+                case ("resume") -> resumeTrack(event.getChannel());
+                case ("stop") -> stopPlaying(event.getChannel());
+                case ("currentQueue") -> currentQueue(event.getChannel());
+            }
+
+        }
+    }
+
+    @Override
+    public void update(MessageReactionAddEvent event) {
+
+    }
+
+    @Override
+    public void update(MessageReactionRemoveEvent event) {
+
     }
 }
