@@ -21,9 +21,6 @@ public class GreetingService implements Observer {
     }
     private final Random random= new Random();
 
-    //as per Singleton, each class must have a private constructor
-    private GreetingService() {}
-
     public void greetRequired(MessageChannel channel) {
 
         Greeting greeting = getRandomGreeting(channel);

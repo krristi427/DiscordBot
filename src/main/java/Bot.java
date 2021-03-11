@@ -18,7 +18,6 @@ import services.Subject;
 import services.audio.Sound;
 import services.authorisation.AuthorisationService;
 import services.commands.CommandsService;
-import services.greeting.GreetingService;
 import services.joke.JokeService;
 import services.plotting.PlottingService;
 import services.poll.PollingService;
@@ -170,9 +169,7 @@ public class Bot extends ListenerAdapter implements Subject {
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
 
         try{
-            log.info("Received message with text: {}", event.getMessage().getContentRaw());
             notifyObservers(event);
-            handleMessage(event);
 
         } catch (Exception e){
             log.warn("Could not process message", e);
@@ -308,17 +305,6 @@ public class Bot extends ListenerAdapter implements Subject {
                     }
                     else
                         sendErrorMessage("please mind the syntax: "+prefix+"changeprefix newPrefix",channel);
-                    break;
-                }
-
-                //BEGIN GreetingServices
-                case ("hellothere"): {
-                    GreetingService.getInstance().greetRequired(channel);
-                    break;
-                }
-
-                case ("creategreeting"): {
-                    GreetingService.getInstance().createGreeting(message, channel);
                     break;
                 }
 
