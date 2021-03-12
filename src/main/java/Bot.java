@@ -7,13 +7,11 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.internal.utils.PermissionUtil;
 import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 import services.Observer;
@@ -27,15 +25,10 @@ import services.roll.RollService;
 
 import javax.annotation.Nonnull;
 import javax.security.auth.login.LoginException;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.net.UnknownServiceException;
-import java.security.PermissionCollection;
-import java.security.Permissions;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 
 @Slf4j
 public class Bot extends ListenerAdapter implements Subject {
@@ -103,10 +96,19 @@ public class Bot extends ListenerAdapter implements Subject {
     }
 
     public static void main(String[] args) throws LoginException {
-        JDABuilder jdaBuilder = JDABuilder.createDefault("Nzg2MTQ1NTI0ODA5NzI4MDAw.X9CJEg._DielBHtcMZnGsG4hqcpKV0KceA");
-        //JDABuilder jdaBuilder = JDABuilder.createDefault("Nzk3ODMzMDcwMDEwMTcxNDMy.X_sN8g._JfC9VomIR-qoZ1LMc-c0uxGP0c");
 
+        Properties properties = new Properties();
+        try {
+            properties.load(new FileInputStream("src/main/resources/config.properties"));
+        } catch (IOException e) {
+            log.error("Couldn't read/find file");
+            e.printStackTrace();
+        }
+
+        String token = properties.getProperty("token");
+        JDABuilder jdaBuilder = JDABuilder.createDefault(token);
         JDA build = jdaBuilder.build();
+
         Bot b = new Bot();
         build.addEventListener(b);
         jdaBuilder.setActivity(Activity.playing("type "+prefix+"help to get help"));
