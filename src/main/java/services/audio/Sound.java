@@ -143,11 +143,17 @@ public class Sound implements Observer {
 
     private void connectToFirstVoiceChannel(AudioManager audioManager) {
         if (!audioManager.isConnected()) {
+
+            //TODO change method to getVoiceChannelCache()
             for (VoiceChannel voiceChannel : audioManager.getGuild().getVoiceChannels()) {
                 audioManager.openAudioConnection(voiceChannel);
                 break;
             }
         }
+    }
+
+    public void exitChannel(TextChannel channel) {
+        channel.getGuild().getAudioManager().closeAudioConnection();
     }
 
     @Override
@@ -168,7 +174,8 @@ public class Sound implements Observer {
                 case ("pause") -> pauseTrack(event.getChannel());
                 case ("resume") -> resumeTrack(event.getChannel());
                 case ("stop") -> stopPlaying(event.getChannel());
-                case ("currentQueue") -> currentQueue(event.getChannel());
+                case ("currentqueue") -> currentQueue(event.getChannel());
+                case ("exit") -> exitChannel(event.getChannel());
             }
 
         }
