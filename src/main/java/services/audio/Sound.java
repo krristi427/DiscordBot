@@ -8,9 +8,7 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.VoiceChannel;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
@@ -31,8 +29,8 @@ public class Sound implements Observer {
 
     private final AudioPlayerManager playerManager;
     private final Map<Long, GuildMusicManager> musicManagers;
+    private String id;
 
-    //TODO add functionality to disconnect from voice channel
     public Sound() {
         this.musicManagers = new HashMap<>();
 
@@ -91,7 +89,7 @@ public class Sound implements Observer {
     }
 
     private void play(Guild guild, GuildMusicManager musicManager, AudioTrack track) {
-        connectToFirstVoiceChannel(guild.getAudioManager());
+        connectToVoiceChannel(guild.getAudioManager());
         musicManager.scheduler.queue(track);
     }
 
@@ -133,6 +131,7 @@ public class Sound implements Observer {
         musicManager.scheduler.queue.clear();
         player.stopTrack();
         player.setPaused(false);
+        channel.getGuild().getAudioManager().closeAudioConnection();
         channel.sendMessage("Playback has been completely stopped and the queue has been cleared.").queue();
     }
 
@@ -141,18 +140,31 @@ public class Sound implements Observer {
         musicManager.scheduler.printQueue(channel);
     }
 
-    private void connectToFirstVoiceChannel(AudioManager audioManager) {
+    private void connectToVoiceChannel(AudioManager audioManager) {
         if (!audioManager.isConnected()) {
 
-            //TODO change method to getVoiceChannelCache()
-            for (VoiceChannel voiceChannel : audioManager.getGuild().getVoiceChannels()) {
-                audioManager.openAudioConnection(voiceChannel);
-                break;
+            //get the member and the voice channel they are in, so that you can join them
+            Member member = audioManager.getGuild().getMemberById(id);
+            if (member != null) {
+                VoiceChannel voiceChannel = member.getVoiceState().getChannel();
+
+                if (voiceChannel != null) {
+                    audioManager.openAudioConnection(voiceChannel);
+
+                } else {
+
+                    //if the person isn't in a voice channel, connect to the first you find
+                    for (VoiceChannel channel : audioManager.getGuild().getVoiceChannelCache()) {
+                        audioManager.openAudioConnection(channel);
+                        break;
+                    }
+                }
             }
         }
     }
 
     public void exitChannel(TextChannel channel) {
+        channel.sendMessage("It was a pleasure serving you human").queue();
         channel.getGuild().getAudioManager().closeAudioConnection();
     }
 
@@ -163,6 +175,8 @@ public class Sound implements Observer {
 
     @Override
     public void update(GuildMessageReceivedEvent event) {
+
+        id = event.getAuthor().getId();
 
         String[] content = event.getMessage().getContentRaw().split(" ");
         String command = content[0];

@@ -46,6 +46,6 @@ public class TrackScheduler extends AudioEventAdapter {
             queuedTracks.append(audioTrack.getInfo().title).append(";\n");
         }
 
-        channel.sendMessage("Current tracks in the queue are: " + queuedTracks).queue();
+        channel.sendMessage("Current tracks in the queue are: \n" + queuedTracks).queue();
     }
 }

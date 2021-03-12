@@ -33,8 +33,6 @@ import java.util.*;
 @Slf4j
 public class Bot extends ListenerAdapter implements Subject {
 
-    //TODO find a way to silence the handleMessage Method while requesting to play music
-
     private enum States{EMPTY,BUZZIG,POLL};
 
     private static States state = States.EMPTY;
@@ -232,9 +230,9 @@ public class Bot extends ListenerAdapter implements Subject {
         try {
             reactionHandelingService.handleRemove(event);
         }
-        //TODO check spelling
         catch (RollService.MassageNotFoundException e){
-            System.out.println("Alle Einträge durchsucht Emoji nicht nichfunden: "+e.value);
+            log.error("Alle Einträge durchsucht Emoji nicht nichfunden: ");
+            e.printStackTrace();
         }
     }
 
@@ -246,9 +244,8 @@ public class Bot extends ListenerAdapter implements Subject {
         try {
             reactionHandelingService.handleAdd(event);
         }
-        //TODO check spelling
         catch (RollService.MassageNotFoundException e){
-                log.info("Alle Einträge durchsucht "+e.typ+" nicht nichfunden: "+e.value);
+            log.info("Alle Einträge durchsucht "+e.typ+" nicht gefunden: "+e.value);
         }
     }
 
@@ -440,7 +437,6 @@ public class Bot extends ListenerAdapter implements Subject {
                 {
                     if(content.length>1)
                     {
-                        //TODO static type to List...provides more possibilities
                         ArrayList<String> rolls=new ArrayList<>();
                         for(int i=2; i<content.length;i++)
                             rolls.add(content[i]);
