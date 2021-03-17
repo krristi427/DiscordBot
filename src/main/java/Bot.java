@@ -33,10 +33,12 @@ import java.util.*;
 @Slf4j
 public class Bot extends ListenerAdapter implements Subject {
 
+    private static Properties properties = new Properties();
+
     private enum States{EMPTY,BUZZIG,POLL};
 
     private static States state = States.EMPTY;
-    private static String prefix = "!";
+    private static String prefix;
 
     PollingService pollingService = new PollingService();
     ReactionHandelingService reactionHandelingService = new ReactionHandelingService();
@@ -95,7 +97,6 @@ public class Bot extends ListenerAdapter implements Subject {
 
     public static void main(String[] args) throws LoginException {
 
-        Properties properties = new Properties();
         try {
             properties.load(new FileInputStream("src/main/resources/config.properties"));
         } catch (IOException e) {
@@ -104,12 +105,14 @@ public class Bot extends ListenerAdapter implements Subject {
         }
 
         String token = properties.getProperty("token");
+        prefix = properties.getProperty("prefix");
+
         JDABuilder jdaBuilder = JDABuilder.createDefault(token);
         JDA build = jdaBuilder.build();
 
         Bot b = new Bot();
         build.addEventListener(b);
-        jdaBuilder.setActivity(Activity.playing("type "+prefix+"help to get help"));
+        jdaBuilder.setActivity(Activity.playing("type "+ Bot.prefix +"help to get help"));
         b.fillObservers();
     }
 
@@ -277,7 +280,9 @@ public class Bot extends ListenerAdapter implements Subject {
                     if(content.length>1)
                     {
                         prefix = content[1];
-                        sendInfoMessage("Prefix changed to: "+prefix,channel);
+                        properties.setProperty("prefix", prefix);
+
+                        sendInfoMessage("Prefix changed to: "+ Bot.prefix,channel);
                     }
                     else
                         sendErrorMessage("please mind the syntax: "+prefix+"changeprefix newPrefix",channel);

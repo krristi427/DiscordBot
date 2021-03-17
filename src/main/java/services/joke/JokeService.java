@@ -113,7 +113,6 @@ public class JokeService implements Observer {
         if(command.startsWith("!")) {
             command = command.toLowerCase(Locale.ROOT).replace("!", "");
 
-            //TODO make use of other endpoints from the API
             switch (command) {
                 case ("joke") -> getJoke(channel);
                 case ("jokewith") -> getJokeFromQuery(channel, content[1]);
