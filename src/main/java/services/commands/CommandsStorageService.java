@@ -5,6 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import dataObjects.Command;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import services.Service;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-public class CommandsStorageService {
+public class CommandsStorageService implements Service {
 
     public static final String FILE_NAME = "src/main/resources/json/commands.json";
     public static final Path FILE_NAME_PATH = Paths.get(FILE_NAME);

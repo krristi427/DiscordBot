@@ -3,13 +3,14 @@ package services.plotting;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import org.jetbrains.annotations.NotNull;
+import services.Service;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 
-public class PlottingService {
+public class PlottingService implements Service {
     private static final PlottingService instance = new PlottingService();
     public static PlottingService getInstance() {
         return instance;

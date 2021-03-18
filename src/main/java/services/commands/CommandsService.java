@@ -7,12 +7,7 @@ import services.Service;
 import java.util.List;
 
 
-public class CommandsService {
-
-    private static final CommandsService instance = new CommandsService();
-    public static CommandsService getInstance() {
-        return instance;
-    }
+public abstract class CommandsService implements Service {
 
     protected String helpRequired(MessageChannel channel, String prefix) {
 
@@ -24,13 +19,8 @@ public class CommandsService {
 
             buffer += (prefix+name + ": " + explanation+"\n\n");
         }
-        EmbedBuilder info = new EmbedBuilder();
-        info.setTitle("Help");
-        info.setColor(0xff8800);
-        info.setDescription(buffer);
-        info.setImage("attachment://src/main/resources/icons/help.png");
-        channel.sendMessage(info.build()).queue(); //restructured to send all heps at once
-        info.clear();
+
+        return buffer;
     }
 
     //TODO add a master-command to add a new command to the list

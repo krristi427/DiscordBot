@@ -4,12 +4,13 @@ import dataObjects.Poll;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import org.jetbrains.annotations.NotNull;
+import services.Service;
 import services.plotting.PlottingService;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class PollingService {
+public class PollingService implements Service {
 
     private static ArrayList<Poll> polls = new ArrayList<>();
     private static Poll activPoll;

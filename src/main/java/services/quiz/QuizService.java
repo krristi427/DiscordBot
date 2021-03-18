@@ -1,6 +1,8 @@
 package services.quiz;
 
-public class QuizService {
+import services.Service;
+
+public class QuizService implements Service {
     //TODO put Buzzer here
     //TODO make more quiz functions
 }

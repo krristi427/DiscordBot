@@ -38,9 +38,9 @@ import java.util.stream.Collectors;
 public class Bot extends ListenerAdapter implements Subject {
 
     private static Properties properties = new Properties();
+    private static ArrayList<RegisterEntry> commandRegister = new ArrayList<>();
 
     private enum States{EMPTY,BUZZIG,POLL};
-
     private static States state = States.EMPTY;
     private static String prefix;
 
@@ -147,13 +147,20 @@ public class Bot extends ListenerAdapter implements Subject {
         JDABuilder jdaBuilder = JDABuilder.createDefault(token);
         JDA build = jdaBuilder.build();
 
-        Bot b = new Bot();
+        Bot b = getInstance();
         build.addEventListener(b);
         jdaBuilder.setActivity(Activity.playing("type "+ Bot.prefix +"help to get help"));
         b.fillObservers();
+
+        wakeUp();
+
     }
 
-    private void sendMessage(String message, String title,  int color, MessageChannel channel)
+    public String getPrefix(){
+        return prefix;
+    }
+
+    public void sendMessage(String message, String title,  int color, MessageChannel channel)
     {
         EmbedBuilder info = new EmbedBuilder();
         info.setTitle(title);
@@ -162,7 +169,7 @@ public class Bot extends ListenerAdapter implements Subject {
         channel.sendMessage(info.build()).queue();
     }
 
-    private void sendMessage(String message, String title, MessageChannel channel)
+    public void sendMessage(String message, String title, MessageChannel channel)
     {
         EmbedBuilder info = new EmbedBuilder();
         info.setTitle(title);
@@ -171,7 +178,7 @@ public class Bot extends ListenerAdapter implements Subject {
         channel.sendMessage(info.build()).queue();
     }
 
-    private void sendMessage(String message, int color, MessageChannel channel)
+    public void sendMessage(String message, int color, MessageChannel channel)
     {
         EmbedBuilder info = new EmbedBuilder();
         info.setColor(color);
@@ -179,7 +186,7 @@ public class Bot extends ListenerAdapter implements Subject {
         channel.sendMessage(info.build()).queue();
     }
 
-    private void sendMessage(String message, MessageChannel channel)
+    public void sendMessage(String message, MessageChannel channel)
     {
         EmbedBuilder info = new EmbedBuilder();
         info.setColor(0xf45642);
@@ -187,7 +194,7 @@ public class Bot extends ListenerAdapter implements Subject {
         channel.sendMessage(info.build()).queue();
     }
 
-    private void sendInfoMessage(String message, MessageChannel channel)
+    public void sendInfoMessage(String message, MessageChannel channel)
     {
         EmbedBuilder info = new EmbedBuilder();
         info.setColor(0xf7ef02);
@@ -195,7 +202,7 @@ public class Bot extends ListenerAdapter implements Subject {
         channel.sendMessage(info.build()).queue();
     }
 
-    private void sendErrorMessage(String message, MessageChannel channel)
+    public void sendErrorMessage(String message, MessageChannel channel)
     {
         EmbedBuilder info = new EmbedBuilder();
         info.setColor(0xf71302);
@@ -203,7 +210,7 @@ public class Bot extends ListenerAdapter implements Subject {
         channel.sendMessage(info.build()).queue();
     }
 
-    private void sendTextMessage(String message, MessageChannel channel)
+    public void sendTextMessage(String message, MessageChannel channel)
     {
         EmbedBuilder info = new EmbedBuilder();
         info.setColor(0x021ff7);
@@ -288,6 +295,41 @@ public class Bot extends ListenerAdapter implements Subject {
             log.info("Alle Einträge durchsucht "+e.typ+" nicht gefunden: "+e.value);
         }
     }
+
+    private void handleMessage2(MessageReceivedEvent event){
+        System.out.println("Got message");
+        if (event.getAuthor().isBot()) return;
+
+        Message message = event.getMessage();
+        MessageChannel channel = event.getChannel();
+        String[] content = message.getContentRaw().split(" ");
+        String commandWithPrefix = content[0];
+
+        if(commandWithPrefix.startsWith(prefix)) {
+            final String command = commandWithPrefix.toLowerCase(Locale.ROOT).replace(prefix, "");
+            if(ignoreNameList.contains(message.getAuthor().getName())) { //ignores User in list
+                sendMessage("Mit dir rede ich nicht", channel);
+                return;
+            }
+            System.out.println("Got command: " + command);
+            System.out.println(commandRegister.get(0).getCommand());
+
+            RegisterEntry registerEntry = commandRegister.stream()
+                    .filter(entry -> entry.getCommand().equals(command))
+                    .collect(Collectors.toList())
+                    .get(0);
+
+            System.out.println("This entry has command: " + registerEntry.getCommand());
+
+            try {
+                registerEntry.getMethod().invoke(registerEntry.getService(), content, channel);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
 
     private void handleMessage(MessageReceivedEvent event) {
 

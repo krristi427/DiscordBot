@@ -15,7 +15,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AuthorisationService {
+public class AuthorisationService implements Service {
     public static final String FILE_NAME = "src/main/resources/json/authorisationProperties.json";
     public static final Path FILE_NAME_PATH = Paths.get(FILE_NAME);
 

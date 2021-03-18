@@ -5,11 +5,12 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent;
 import org.jetbrains.annotations.NotNull;
+import services.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class RollService {
+public class RollService implements Service{
 
     ArrayList<ReactionRollEvent> events = new ArrayList<>();
     private static final RollService instance = new RollService();
