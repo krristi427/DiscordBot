@@ -16,7 +16,6 @@ import java.util.concurrent.*;
 public abstract class JokeService extends Service {
 
     OkHttpClient okHttpClient = new OkHttpClient();
-    final FutureTask<Object> futureTask = new FutureTask<>(() -> {}, new Object());
 
     private String joke = "holdrio";
 
