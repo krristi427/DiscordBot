@@ -9,18 +9,9 @@ public class CommandsServiceWrapper extends CommandsService implements Wrapper {
     public static CommandsServiceWrapper getInstance() {
         return instance;
     }
-    Bot bot = Bot.getInstance();
-
 
     public CommandsServiceWrapper() {
-        System.out.println("Ich werde aufgerufen");
-        List<Method> methods = Arrays.asList(CommandsServiceWrapper.class.getMethods());
-
-        methods.forEach(method -> {
-
-            RegisterEntry entry = new RegisterEntry(this, method);
-            bot.register(entry);
-        });
+        super();
     }
 
     public void help(String[] content, MessageChannel channel) {

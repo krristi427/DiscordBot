@@ -129,6 +129,12 @@ public class Bot extends ListenerAdapter implements Subject {
         commandRegister.add(entry);
     }
 
+    private  static  void loadGlobalProperties()
+    {
+        prefix = properties.getProperty("prefix");
+        standardMessageColour = Integer.parseInt(properties.getProperty("standardMessageColour"), 16);
+    }
+
     public static void main(String[] args) throws LoginException {
 
         try {
@@ -138,9 +144,9 @@ public class Bot extends ListenerAdapter implements Subject {
             e.printStackTrace();
         }
 
-        String token = properties.getProperty("token");
-        prefix = properties.getProperty("prefix");
+        loadGlobalProperties();
 
+        String token = properties.getProperty("token");
         JDABuilder jdaBuilder = JDABuilder.createDefault(token);
         JDA build = jdaBuilder.build();
 
@@ -157,7 +163,7 @@ public class Bot extends ListenerAdapter implements Subject {
         return prefix;
     }
 
-    public void sendMessage(String message, String title,  int color, MessageChannel channel)
+    public void sendMessage(String message, String title,  int color, MessageChannel channel) //sends a costume Message
     {
         EmbedBuilder info = new EmbedBuilder();
         info.setTitle(title);
@@ -170,7 +176,7 @@ public class Bot extends ListenerAdapter implements Subject {
     {
         EmbedBuilder info = new EmbedBuilder();
         info.setTitle(title);
-        info.setColor(0xf45642);
+        info.setColor(standardMessageColour);
         info.setDescription(message);
         channel.sendMessage(info.build()).queue();
     }
@@ -183,10 +189,10 @@ public class Bot extends ListenerAdapter implements Subject {
         channel.sendMessage(info.build()).queue();
     }
 
-    public void sendMessage(String message, MessageChannel channel)
+    public void sendMessage(String message, MessageChannel channel) //Send a standard Message
     {
         EmbedBuilder info = new EmbedBuilder();
-        info.setColor(0xf45642);
+        info.setColor(standardMessageColour);
         info.setDescription(message);
         channel.sendMessage(info.build()).queue();
     }
@@ -202,7 +208,7 @@ public class Bot extends ListenerAdapter implements Subject {
         channel.sendMessage(info.build()).queue();
     }
 
-    public void sendErrorMessage(String message, MessageChannel channel)
+    public void sendErrorMessage(String message, MessageChannel channel) //A Error Message is a Message to Inform the userabout an Error that Occourt (f.e Wrong arguments)
     {
         EmbedBuilder info = new EmbedBuilder();
         info.setColor(0xf71302);
@@ -210,7 +216,7 @@ public class Bot extends ListenerAdapter implements Subject {
         channel.sendMessage(info.build()).queue();
     }
 
-    public void sendTextMessage(String message, MessageChannel channel)
+    public void sendTextMessage(String message, MessageChannel channel) //A Text Message is longer Text that isnt hard coded (f.e Userinput or Intertsources)
     {
         EmbedBuilder info = new EmbedBuilder();
         info.setColor(0x021ff7);
@@ -389,7 +395,6 @@ public class Bot extends ListenerAdapter implements Subject {
                             log.error("Unexpected Error occurred: ");
                             e.printStackTrace();
                         }
-
                     }
                     else
                         sendErrorMessage("Error: Please mind the syntax",channel);

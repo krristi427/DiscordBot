@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class RollService implements Service{
+public class RollService{
 
     ArrayList<ReactionRollEvent> events = new ArrayList<>();
     private static final RollService instance = new RollService();

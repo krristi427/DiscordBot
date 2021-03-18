@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class PollingService implements Service {
+public class PollingService {
 
     private static ArrayList<Poll> polls = new ArrayList<>();
     private static Poll activPoll;

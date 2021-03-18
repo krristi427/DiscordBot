@@ -4,7 +4,7 @@ import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent;
 import services.roll.RollService;
 
-public class ReactionHandelingService implements Service {
+public class ReactionHandelingService {
 
     public void handleAdd(MessageReactionAddEvent event) throws RollService.MassageNotFoundException {
         //TODO finde herraus was für ein Typ die nachricht hat auf die Reagiert wurde. Also Poll oder ReactionRollEvent
