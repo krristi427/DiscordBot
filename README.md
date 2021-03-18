@@ -1,2 +1,2 @@
 # DiscordBot
-A simple Discord Bot 
+A simple Discord bot.Bot 

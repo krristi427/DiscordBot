@@ -1,4 +1,7 @@
+package bot;
+
 import dataObjects.Poll;
+import dataObjects.RegisterEntry;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -16,8 +19,8 @@ import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 import services.Observer;
 import services.Subject;
+import services.Wrapper;
 import services.authorisation.AuthorisationService;
-import services.commands.CommandsService;
 import services.plotting.PlottingService;
 import services.poll.PollingService;
 import services.reactionHandelingService.ReactionHandelingService;
@@ -29,6 +32,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class Bot extends ListenerAdapter implements Subject {
@@ -46,6 +50,24 @@ public class Bot extends ListenerAdapter implements Subject {
     public List<Observer> observers = new ArrayList<>();
 
     private ArrayList<String> ignoreNameList = new ArrayList<>();
+
+    /**
+     * Method to initialize all Wrappers, so that they can notify the bot of their existence
+     */
+    private static void wakeUp() { //wake me up before you go go
+
+        //needs folder boi
+        Reflections reflections = new Reflections("services");
+        Set<Class<? extends Wrapper>> wrapperTypes = reflections.getSubTypesOf(Wrapper.class);
+
+        wrapperTypes.forEach(aClass -> {
+            try {
+                Wrapper wrapper = aClass.getDeclaredConstructor().newInstance();
+            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        });
+    }
 
     @Override
     public void registerObserver(Observer observer) {
@@ -93,6 +115,21 @@ public class Bot extends ListenerAdapter implements Subject {
     @Override
     public void notifyObservers(MessageReactionRemoveEvent event) {
         observers.forEach(observer -> observer.update(event));
+    }
+
+    //this Class is a big Singleton
+    private static final Bot instance = new Bot();
+
+    public static Bot getInstance() {
+        return instance;
+    }
+
+    private Bot() {
+
+    }
+
+    public void register(RegisterEntry entry) {
+        commandRegister.add(entry);
     }
 
     public static void main(String[] args) throws LoginException {
@@ -177,8 +214,8 @@ public class Bot extends ListenerAdapter implements Subject {
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
 
-        try{
-            notifyObservers(event);
+        try {
+            handleMessage2(event);
 
         } catch (Exception e){
             log.warn("Could not process message", e);
@@ -271,10 +308,6 @@ public class Bot extends ListenerAdapter implements Subject {
 
             switch (command) {
                 //BEGIN DefaultServices
-                case ("help"): {
-                    CommandsService.getInstance().helpRequired(channel,prefix);
-                    break;
-                }
 
                 case ("changeprefix"): {
                     if(content.length>1)
@@ -382,7 +415,7 @@ public class Bot extends ListenerAdapter implements Subject {
                             }
                             catch (net.dv8tion.jda.api.exceptions.InsufficientPermissionException e)
                             {
-                                sendErrorMessage("Error: The Bot has does not have enough rights for this polling-typ! Falling back to Public",channel);
+                                sendErrorMessage("Error: The bot.Bot has does not have enough rights for this polling-typ! Falling back to Public",channel);
                                 pollingService.setActivePollingtyp(Poll.Pollingtypes.PUBLIC);
                             }
                             catch (PollingService.WrongPollingTypException e)

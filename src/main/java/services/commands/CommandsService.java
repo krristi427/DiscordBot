@@ -1,8 +1,8 @@
 package services.commands;
 
 import dataObjects.Command;
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
+import services.Service;
 
 import java.util.List;
 
@@ -14,9 +14,9 @@ public class CommandsService {
         return instance;
     }
 
-    public void helpRequired(MessageChannel channel, String prefix) {
+    protected String helpRequired(MessageChannel channel, String prefix) {
 
-            String buffer = "";
+        String buffer = "";
         List<Command> commands = CommandsStorageService.getInstance().getCommands();
         for (Command command : commands) {
             String name = command.getName();

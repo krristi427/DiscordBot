@@ -6,6 +6,7 @@ import dataObjects.AuthorisationPair;
 import lombok.Getter;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
+import services.Service;
 
 import java.io.IOException;
 import java.nio.file.Files;
