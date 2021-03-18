@@ -26,8 +26,17 @@ public class JokeService implements Observer {
         return instance;
     }
     OkHttpClient okHttpClient = new OkHttpClient();
+    final FutureTask<Object> futureTask = new FutureTask<>(() -> {}, new Object());
 
-    public void getJoke(MessageChannel channel) {
+    private String joke = "holdrio";
+
+    public JokeService() {
+        super();
+    }
+
+    protected CompletableFuture<String> getJoke() {
+
+        CompletableFuture<String> completableFuture = new CompletableFuture<>();
 
         Request request = new Request.Builder()
                 .url("https://api.chucknorris.io/jokes/random")
@@ -37,7 +46,6 @@ public class JokeService implements Observer {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                channel.sendMessage("Something went wrong with the request...").queue();
                 log.error("Something went wrong with the request...");
                 e.printStackTrace();
             }
@@ -46,20 +54,23 @@ public class JokeService implements Observer {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
 
                 JsonObject element = JsonParser.parseString(response.body().string()).getAsJsonObject();
-                String joke = element.get("value").toString();
-                channel.sendMessage(joke).queue();
+                joke = element.get("value").toString();
+                completableFuture.complete(joke);
             }
         });
+
+        return completableFuture;
     }
 
-    public void getJokeFromQuery(MessageChannel channel, String query) {
+    protected CompletableFuture<String> getJokeFromQuery(String query) {
+
+        CompletableFuture<String> completableFuture = new CompletableFuture<>();
 
         //bc appearently they have this restriction
         if ((query.length() < 3) || (query.length() > 120)) {
 
-            channel.sendMessage("Sorry bud that was an either too short, or too long query").queue();
             log.info("Somebody entered a short/long query");
-            return;
+            return CompletableFuture.completedFuture("");
         }
 
         Request request = new Request.Builder()
@@ -71,7 +82,6 @@ public class JokeService implements Observer {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
 
-                channel.sendMessage("Something went wrong...").queue();
                 log.error("Something went wrong...");
                 e.printStackTrace();
             }
@@ -98,6 +108,8 @@ public class JokeService implements Observer {
                 }
             }
         });
+
+        return completableFuture;
     }
 
     @Override

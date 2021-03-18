@@ -7,7 +7,11 @@ import services.Service;
 import java.util.List;
 
 
-public abstract class CommandsService implements Service {
+public abstract class CommandsService extends Service {
+
+    CommandsService() {
+        super();
+    }
 
     protected String helpRequired(MessageChannel channel, String prefix) {
 

@@ -6,7 +6,6 @@ import dataObjects.AuthorisationPair;
 import lombok.Getter;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
-import services.Service;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -15,7 +14,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AuthorisationService implements Service {
+//TODO make Constructor
+public class AuthorisationService {
     public static final String FILE_NAME = "src/main/resources/json/authorisationProperties.json";
     public static final Path FILE_NAME_PATH = Paths.get(FILE_NAME);
 

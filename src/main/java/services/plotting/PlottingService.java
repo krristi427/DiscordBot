@@ -10,11 +10,9 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 
-public class PlottingService implements Service {
-    private static final PlottingService instance = new PlottingService();
-    public static PlottingService getInstance() {
-        return instance;
-    }
+
+public abstract class PlottingService extends Service {
+
 
     public class PythonError extends Exception{
         public String errorLines;

@@ -4,8 +4,6 @@ import dataObjects.Poll;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import org.jetbrains.annotations.NotNull;
-import services.Service;
-import services.plotting.PlottingService;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -83,7 +81,7 @@ public class PollingService implements Service {
     }
 
     public void endpoll( @NotNull MessageChannel channel) throws IOException {
-        PlottingService.getInstance().inputdata(0,activPoll.getPollingResults(),channel);
+        //PlottingService.getInstance().inputdata(0,activPoll.getPollingResults(),channel);
     }
 
     public boolean existsActivePoll()

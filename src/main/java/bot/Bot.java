@@ -1,12 +1,10 @@
 package bot;
 
-import dataObjects.Poll;
 import dataObjects.RegisterEntry;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
@@ -20,8 +18,6 @@ import org.reflections.Reflections;
 import services.Observer;
 import services.Subject;
 import services.Wrapper;
-import services.authorisation.AuthorisationService;
-import services.plotting.PlottingService;
 import services.poll.PollingService;
 import services.reactionHandelingService.ReactionHandelingService;
 import services.roll.RollService;
@@ -43,6 +39,7 @@ public class Bot extends ListenerAdapter implements Subject {
     private enum States{EMPTY,BUZZIG,POLL};
     private static States state = States.EMPTY;
     private static String prefix;
+    private static int standardMessageColour;
 
     PollingService pollingService = new PollingService();
     ReactionHandelingService reactionHandelingService = new ReactionHandelingService();
@@ -194,6 +191,9 @@ public class Bot extends ListenerAdapter implements Subject {
         channel.sendMessage(info.build()).queue();
     }
 
+    /**
+    Info Messages are Messages that inform about an importat Information
+    */
     public void sendInfoMessage(String message, MessageChannel channel)
     {
         EmbedBuilder info = new EmbedBuilder();
@@ -297,7 +297,6 @@ public class Bot extends ListenerAdapter implements Subject {
     }
 
     private void handleMessage2(MessageReceivedEvent event){
-        System.out.println("Got message");
         if (event.getAuthor().isBot()) return;
 
         Message message = event.getMessage();
@@ -311,15 +310,11 @@ public class Bot extends ListenerAdapter implements Subject {
                 sendMessage("Mit dir rede ich nicht", channel);
                 return;
             }
-            System.out.println("Got command: " + command);
-            System.out.println(commandRegister.get(0).getCommand());
 
             RegisterEntry registerEntry = commandRegister.stream()
                     .filter(entry -> entry.getCommand().equals(command))
                     .collect(Collectors.toList())
                     .get(0);
-
-            System.out.println("This entry has command: " + registerEntry.getCommand());
 
             try {
                 registerEntry.getMethod().invoke(registerEntry.getService(), content, channel);
@@ -329,11 +324,9 @@ public class Bot extends ListenerAdapter implements Subject {
         }
     }
 
-
-
     private void handleMessage(MessageReceivedEvent event) {
 
-        if (event.getAuthor().isBot()) return;
+        /*if (event.getAuthor().isBot()) return;
 
         Message message = event.getMessage();
         MessageChannel channel = event.getChannel();
@@ -637,6 +630,6 @@ public class Bot extends ListenerAdapter implements Subject {
                 }
 
             }
-        }
+        }*/
     }
 }

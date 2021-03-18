@@ -1,13 +1,7 @@
 package services.commands;
 
-import bot.Bot;
-import dataObjects.RegisterEntry;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import services.Wrapper;
-
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.List;
 
 public class CommandsServiceWrapper extends CommandsService implements Wrapper {
 

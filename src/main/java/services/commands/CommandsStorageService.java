@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-public class CommandsStorageService implements Service {
+public class CommandsStorageService extends Service {
 
     public static final String FILE_NAME = "src/main/resources/json/commands.json";
     public static final Path FILE_NAME_PATH = Paths.get(FILE_NAME);
