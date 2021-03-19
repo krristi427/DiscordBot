@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
@@ -47,6 +48,7 @@ public class Bot extends ListenerAdapter implements Subject {
     public List<Observer> observers = new ArrayList<>();
 
     private ArrayList<String> ignoreNameList = new ArrayList<>();
+    public User eventAuthor;
 
     /**
      * Method to initialize all Wrappers, so that they can notify the bot of their existence
@@ -303,17 +305,26 @@ public class Bot extends ListenerAdapter implements Subject {
     }
 
     private void handleMessage2(MessageReceivedEvent event){
-        if (event.getAuthor().isBot()) return;
+        handleAllMessages(event.getAuthor(), event.getMessage(), event.getChannel());
+    }
 
-        Message message = event.getMessage();
-        MessageChannel channel = event.getChannel();
-        String[] content = message.getContentRaw().split(" ");
+    private void handleGuildMessages(GuildMessageReceivedEvent event) {
+        handleAllMessages(event.getAuthor(), event.getMessage(), event.getChannel());
+    }
+
+    private void handleAllMessages(User author, Message message2, MessageChannel channel2) {
+
+        if (author.isBot()) return;
+
+        eventAuthor = author;
+
+        String[] content = message2.getContentRaw().split(" ");
         String commandWithPrefix = content[0];
 
         if(commandWithPrefix.startsWith(prefix)) {
             final String command = commandWithPrefix.toLowerCase(Locale.ROOT).replace(prefix, "");
-            if(ignoreNameList.contains(message.getAuthor().getName())) { //ignores User in list
-                sendMessage("Mit dir rede ich nicht", channel);
+            if(ignoreNameList.contains(message2.getAuthor().getName())) { //ignores User in list
+                sendMessage("Mit dir rede ich nicht\nMimimimimimimimimi", channel2);
                 return;
             }
 
@@ -323,7 +334,7 @@ public class Bot extends ListenerAdapter implements Subject {
                     .get(0);
 
             try {
-                registerEntry.getMethod().invoke(registerEntry.getService(), content, channel);
+                registerEntry.getMethod().invoke(registerEntry.getService(), content, channel2);
             } catch (IllegalAccessException | InvocationTargetException e) {
                 e.printStackTrace();
             }

@@ -8,30 +8,30 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
-import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.managers.AudioManager;
-import services.Observer;
+import services.Service;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
-public class Sound implements Observer {
+public abstract class SoundService extends Service {
 
-    public static final Sound instance = new Sound();
-    public static final Sound getInstance() {
-        return instance;
-    }
+    //TODO add functions for making the audio louder/silent
+    //TODO chances to jump to a specific place in the queue/skip songs
 
     private final AudioPlayerManager playerManager;
     private final Map<Long, GuildMusicManager> musicManagers;
     private String id;
+    private String channelFeedback;
+    private CompletableFuture<String> completableFuture;
 
-    public Sound() {
+    public SoundService() {
+        super();
         this.musicManagers = new HashMap<>();
 
         this.playerManager = new DefaultAudioPlayerManager();
@@ -52,13 +52,17 @@ public class Sound implements Observer {
         return musicManager;
     }
 
-    public void loadAndPlay(TextChannel channel, String trackUrl) {
+    public CompletableFuture<String> loadAndPlay(TextChannel channel, String trackUrl) {
+
+        completableFuture = new CompletableFuture<>();
+
         GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
 
         playerManager.loadItemOrdered(musicManager, trackUrl, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
-                channel.sendMessage("Adding to queue: " + track.getInfo().title).queue();
+                channelFeedback = "Adding to queue: " + track.getInfo().title;
+                completableFuture.complete(channelFeedback);
                 play(channel.getGuild(), musicManager, track);
             }
 
@@ -70,22 +74,27 @@ public class Sound implements Observer {
                     firstTrack = playlist.getTracks().get(0);
                 }
 
-                channel.sendMessage("Adding to queue "
+                channelFeedback = "Adding to queue "
                         + firstTrack.getInfo().title
-                        + " (first track of playlist " + playlist.getName() + ")").queue();
+                        + " (first track of playlist " + playlist.getName() + ")";
+                completableFuture.complete(channelFeedback);
                 play(channel.getGuild(), musicManager, firstTrack);
             }
 
             @Override
             public void noMatches() {
-                channel.sendMessage("Nothing found by " + trackUrl).queue();
+                channelFeedback = "Nothing found by " + trackUrl;
+                completableFuture.complete(channelFeedback);
             }
 
             @Override
             public void loadFailed(FriendlyException exception) {
-                channel.sendMessage("Could not play: " + exception.getMessage()).queue();
+                channelFeedback = "Could not play: " + exception.getMessage();
+                completableFuture.complete(channelFeedback);
             }
         });
+
+        return completableFuture;
     }
 
     private void play(Guild guild, GuildMusicManager musicManager, AudioTrack track) {
@@ -93,37 +102,44 @@ public class Sound implements Observer {
         musicManager.scheduler.queue(track);
     }
 
-    public void pauseTrack(TextChannel channel) {
+    public CompletableFuture<String> pauseTrack(TextChannel channel) {
+
+        completableFuture = new CompletableFuture<>();
 
         GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
         AudioPlayer player = musicManager.player;
 
         if (player.getPlayingTrack() == null) {
-            channel.sendMessage("Cannot pause or resume player because no track is loaded for playing.").queue();
-            return;
+            channelFeedback = "Cannot pause or resume player because no track is loaded for playing.";
+            completableFuture.complete(channelFeedback);
+            return completableFuture;
         }
 
         player.setPaused(!player.isPaused());
 
         if (player.isPaused()) {
-            channel.sendMessage("The player has been paused.").queue();
+            channelFeedback = "The player has been paused.";
+            completableFuture.complete(channelFeedback);
         }
         else {
-            channel.sendMessage("The player has resumed playing.").queue();
+            channelFeedback = "The player has resumed playing.";
+            completableFuture.complete(channelFeedback);
         }
+        return completableFuture;
     }
 
-    public void resumeTrack(TextChannel channel) {
+    public String resumeTrack(TextChannel channel) {
+
         GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
         AudioPlayer player = musicManager.player;
         AudioTrack playingTrack = player.getPlayingTrack();
 
         player.setPaused(!player.isPaused());
 
-        channel.sendMessage("Resuming: " + playingTrack.getInfo().title).queue();
+        return "Resuming: " + playingTrack.getInfo().title;
     }
 
-    public void stopPlaying(TextChannel channel) {
+    public String stopPlaying(TextChannel channel) {
 
         GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
         AudioPlayer player = musicManager.player;
@@ -132,7 +148,7 @@ public class Sound implements Observer {
         player.stopTrack();
         player.setPaused(false);
         channel.getGuild().getAudioManager().closeAudioConnection();
-        channel.sendMessage("Playback has been completely stopped and the queue has been cleared.").queue();
+        return "Playback has been completely stopped and the queue has been cleared.";
     }
 
     public void currentQueue(TextChannel channel) {
@@ -164,44 +180,10 @@ public class Sound implements Observer {
     }
 
     public void exitChannel(TextChannel channel) {
-        channel.sendMessage("It was a pleasure serving you human").queue();
         channel.getGuild().getAudioManager().closeAudioConnection();
     }
 
-    @Override
-    public void update(MessageReceivedEvent event) {
-
-    }
-
-    @Override
-    public void update(GuildMessageReceivedEvent event) {
-
-        id = event.getAuthor().getId();
-
-        String[] content = event.getMessage().getContentRaw().split(" ");
-        String command = content[0];
-        if(command.startsWith("!")) {
-            command = command.toLowerCase(Locale.ROOT).replace("!", "");
-
-            switch (command) {
-                case ("play") -> loadAndPlay(event.getChannel(), content[1]);
-                case ("pause") -> pauseTrack(event.getChannel());
-                case ("resume") -> resumeTrack(event.getChannel());
-                case ("stop") -> stopPlaying(event.getChannel());
-                case ("currentqueue") -> currentQueue(event.getChannel());
-                case ("exit") -> exitChannel(event.getChannel());
-            }
-
-        }
-    }
-
-    @Override
-    public void update(MessageReactionAddEvent event) {
-
-    }
-
-    @Override
-    public void update(MessageReactionRemoveEvent event) {
-
+    public void setId(String id) {
+        this.id = id;
     }
 }

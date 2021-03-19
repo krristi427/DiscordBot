@@ -15,8 +15,9 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.12'
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
 
-    //JDA
+    //JDA & utilities
     compile 'net.dv8tion:JDA:4.2.0_222'
+    compile 'com.jagrosh:jda-utilities:2.1.2'
 
     //Slf4j
     implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30'
