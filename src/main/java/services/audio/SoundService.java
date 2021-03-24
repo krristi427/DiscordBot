@@ -21,7 +21,6 @@ import java.util.concurrent.CompletableFuture;
 
 public abstract class SoundService extends Service {
 
-    //TODO add functions for making the audio louder/silent
     //TODO chances to jump to a specific place in the queue/skip songs
 
     private final AudioPlayerManager playerManager;
@@ -177,6 +176,14 @@ public abstract class SoundService extends Service {
                 }
             }
         }
+    }
+
+    public void changeVolume(TextChannel channel, int newVolume) {
+
+        GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
+        AudioPlayer player = musicManager.player;
+        int playerVolume = player.getVolume();
+        player.setVolume(playerVolume + newVolume);
     }
 
     public void exitChannel(TextChannel channel) {

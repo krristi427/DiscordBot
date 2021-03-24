@@ -35,6 +35,12 @@
   "name": "endPoll",
   "explanation": "ends the active poll and prepares the data for plotting"
 }, {
+  "name": "play",
+  "explanation": "Needs a Link to the media you want to play"
+}, {
+  "name": "pause",
+  "explanation": "pauses a track"
+}, {
   "name": "resume",
   "explanation": "Restarts a paused track"
 }, {
@@ -43,6 +49,12 @@
 }, {
   "name": "currentQueue",
   "explanation": "Prints out the current queue of tracks"
+}, {
+  "name": "volume",
+  "explanation": "adjust the volume of the track. If you want to make it quieter just input a negative number ;)"
+}, {
+  "name": "exit",
+  "explanation": "Gracefully leaves the voice channel"
 }, {
   "name": "startNumberedReactionRolls or snrr",
   "explanation": "creates a new Message with Reactions (Nummber from 1 to 10) you can click on to get the roll with the specified name. Give the roll names as arguments (exact name pls). Only 10 rolls can be given (if you need mor use srr)"

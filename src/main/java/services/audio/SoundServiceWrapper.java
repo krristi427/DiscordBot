@@ -44,6 +44,10 @@ public class SoundServiceWrapper extends SoundService implements Wrapper {
         currentQueue((TextChannel) channel);
     }
 
+    public void volume(String[] content, MessageChannel channel) {
+        changeVolume((TextChannel)channel, Integer.parseInt(content[1]));
+    }
+
     public void exit(String[] content, MessageChannel channel) {
         exitChannel((TextChannel) channel);
         channel.sendMessage("It was a pleasure serving you human").queue();
