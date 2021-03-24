@@ -4,6 +4,8 @@ import dataObjects.Greeting;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import services.Wrapper;
 
+import java.util.Arrays;
+
 public class GreetingServiceWrapper extends GreetingService implements Wrapper {
 
     //TODO add funcionality to delete greetings
@@ -28,7 +30,10 @@ public class GreetingServiceWrapper extends GreetingService implements Wrapper {
 
     public void creategreeting(String[] content, MessageChannel channel) {
 
-        channel.sendMessage(createGreeting(content[1])).queue();
+        String[] contentCopy = Arrays.copyOfRange(content, 1, content.length);
+        String greetingText = String.join(" ", contentCopy);
+
+        channel.sendMessage(createGreeting(greetingText)).queue();
     }
 
 
