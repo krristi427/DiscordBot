@@ -4,6 +4,7 @@ import dataObjects.Greeting;
 import services.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 public abstract class GreetingService extends Service {
@@ -14,11 +15,11 @@ public abstract class GreetingService extends Service {
 
     private final Random random = new Random();
 
-    protected Greeting getRandomGreeting() {
+    protected Optional<Greeting> getRandomGreeting() {
 
-        //TODO return Optional to reduce null-checks
         List<Greeting> actualGreets = GreetingsStorageService.getInstance().getGreetingList();
-        return actualGreets.get(random.nextInt(actualGreets.size()));
+        Greeting greeting = actualGreets.get(random.nextInt(actualGreets.size()));
+        return Optional.of(greeting);
     }
 
     protected String createGreeting(String greetingTextFromRaw) {
