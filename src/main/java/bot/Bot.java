@@ -274,7 +274,7 @@ public class Bot extends ListenerAdapter implements Subject {
         //Its not suported that bots remove Reactions TODO think about if that is a good idea. It is possible in a eatch ?
         //if (event.getMember().getUser().equals(event.getChannel().retrieveMessageById(event.getMessageId()).complete().getAuthor())) return;
         MessageChannel channel = event.getChannel();
-        //Attention Important: This Servic handels all reactions that are based on what chanel we are in or what type of message this is.
+        //Attention Important: This Service handles all reactions that are based on what channel we are in or what type of message this is.
         try {
             reactionHandelingService.handleRemove(event);
         }
