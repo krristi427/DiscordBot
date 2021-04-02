@@ -1,33 +1,25 @@
 plugins {
-    id 'org.springframework.boot' version '2.4.4'
-    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
 }
 
-group 'com.example'
-version '0.0.1-SNAPSHOT'
-sourceCompatibility = 11
-
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
-}
+group 'org.example'
+version '1.0-SNAPSHOT'
 
 repositories {
     jcenter()
-    //mavenCentral()
 }
 
 dependencies {
-    //Spring Boot
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
     //Lombok
     implementation 'org.projectlombok:lombok:1.18.16'
     compileOnly 'org.projectlombok:lombok:1.18.12'
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
+
+    // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
+
+    // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
+    implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30'
 
     //JDA & utilities
     compile 'net.dv8tion:JDA:4.2.0_222'
@@ -47,7 +39,6 @@ dependencies {
 
     //Reflections
     implementation group: 'org.reflections', name: 'reflections', version: '0.9.11'
-
 }
 
 test {

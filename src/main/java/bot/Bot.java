@@ -1,6 +1,7 @@
 package bot;
 
 import dataObjects.RegisterEntry;
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -15,10 +16,6 @@ import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
 import services.Observer;
 import services.Subject;
 import services.Wrapper;
@@ -34,8 +31,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@SpringBootApplication
-@RestController
+@Slf4j
 public class Bot extends ListenerAdapter implements Subject {
 
     private static Properties properties = new Properties();
@@ -127,7 +123,7 @@ public class Bot extends ListenerAdapter implements Subject {
         return instance;
     }
 
-    protected Bot() {
+    private Bot() {
 
     }
 
@@ -135,15 +131,13 @@ public class Bot extends ListenerAdapter implements Subject {
         commandRegister.add(entry);
     }
 
-    private  static  void loadGlobalProperties()
+    private static void loadGlobalProperties()
     {
         prefix = properties.getProperty("prefix");
         standardMessageColour = Integer.parseInt(properties.getProperty("standardMessageColour"), 16);
     }
 
     public static void main(String[] args) throws LoginException {
-
-        SpringApplication.run(Bot.class, args);
 
         try {
             properties.load(new FileInputStream("src/main/resources/config.properties"));
@@ -164,11 +158,6 @@ public class Bot extends ListenerAdapter implements Subject {
 
         wakeUp();
 
-    }
-
-    @GetMapping("/bot")
-    public String helloWorld() {
-        return "Discord Bot is running boi";
     }
 
     public String getPrefix(){
