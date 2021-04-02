@@ -1,7 +1,6 @@
 package bot;
 
 import dataObjects.RegisterEntry;
-import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -16,6 +15,10 @@ import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 import services.Observer;
 import services.Subject;
 import services.Wrapper;
@@ -31,7 +34,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Slf4j
+@SpringBootApplication
+@RestController
 public class Bot extends ListenerAdapter implements Subject {
 
     private static Properties properties = new Properties();
@@ -123,7 +127,7 @@ public class Bot extends ListenerAdapter implements Subject {
         return instance;
     }
 
-    private Bot() {
+    protected Bot() {
 
     }
 
@@ -139,10 +143,11 @@ public class Bot extends ListenerAdapter implements Subject {
 
     public static void main(String[] args) throws LoginException {
 
+        SpringApplication.run(Bot.class, args);
+
         try {
             properties.load(new FileInputStream("src/main/resources/config.properties"));
         } catch (IOException e) {
-            log.error("Couldn't read/find file");
             e.printStackTrace();
         }
 
@@ -159,6 +164,11 @@ public class Bot extends ListenerAdapter implements Subject {
 
         wakeUp();
 
+    }
+
+    @GetMapping("/bot")
+    public String helloWorld() {
+        return "Discord Bot is running boi";
     }
 
     public String getPrefix(){
@@ -233,7 +243,6 @@ public class Bot extends ListenerAdapter implements Subject {
             handleMessage2(event);
 
         } catch (Exception e){
-            log.warn("Could not process message", e);
             sendErrorMessage("Unexpected fatal error occurred!",event.getMessage().getChannel());
             e.printStackTrace();
         }
@@ -243,10 +252,9 @@ public class Bot extends ListenerAdapter implements Subject {
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
 
         try{
-            notifyObservers(event);
+            //handleGuildMessages(event);
 
         } catch (Exception e){
-            log.warn("Could not process message", e);
             event.getMessage().getChannel().sendMessage("Unexpected error occurred!").queue();
             e.printStackTrace();
         }
@@ -256,11 +264,9 @@ public class Bot extends ListenerAdapter implements Subject {
     public void onMessageReactionAdd(@Nonnull MessageReactionAddEvent event) {
 
         try{
-            log.info("Received message with text: {}", event.toString());
             handleReactionAdd(event);
 
         } catch (Exception e){
-            log.warn("Could not process message", e);
             e.printStackTrace();
         }
     }
@@ -268,11 +274,9 @@ public class Bot extends ListenerAdapter implements Subject {
     @Override
     public void onMessageReactionRemove(@NotNull MessageReactionRemoveEvent event){
         try{
-            log.info("Received message with text: {}", event.toString());
             handleReactionRemove(event);
 
         } catch (Exception e){
-            log.warn("Could not process message", e);
             e.printStackTrace();
         }
     }
@@ -286,7 +290,6 @@ public class Bot extends ListenerAdapter implements Subject {
             reactionHandelingService.handleRemove(event);
         }
         catch (RollService.MassageNotFoundException e){
-            log.error("Alle Einträge durchsucht Emoji nicht nichfunden: ");
             e.printStackTrace();
         }
     }
@@ -300,7 +303,7 @@ public class Bot extends ListenerAdapter implements Subject {
             reactionHandelingService.handleAdd(event);
         }
         catch (RollService.MassageNotFoundException e){
-            log.info("Alle Einträge durchsucht "+e.typ+" nicht gefunden: "+e.value);
+            e.printStackTrace();
         }
     }
 
