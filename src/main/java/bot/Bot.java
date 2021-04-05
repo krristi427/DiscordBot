@@ -229,22 +229,10 @@ public class Bot extends ListenerAdapter implements Subject {
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
 
         try {
-            handleMessage2(event);
+            handleAllMessages(event.getAuthor(), event.getMessage(), event.getChannel());
 
         } catch (Exception e){
             sendErrorMessage("Unexpected fatal error occurred!",event.getMessage().getChannel());
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
-
-        try{
-            //handleGuildMessages(event);
-
-        } catch (Exception e){
-            event.getMessage().getChannel().sendMessage("Unexpected error occurred!").queue();
             e.printStackTrace();
         }
     }
@@ -296,27 +284,19 @@ public class Bot extends ListenerAdapter implements Subject {
         }
     }
 
-    private void handleMessage2(MessageReceivedEvent event){
-        handleAllMessages(event.getAuthor(), event.getMessage(), event.getChannel());
-    }
-
-    private void handleGuildMessages(GuildMessageReceivedEvent event) {
-        handleAllMessages(event.getAuthor(), event.getMessage(), event.getChannel());
-    }
-
-    private void handleAllMessages(User author, Message message2, MessageChannel channel2) {
+    private void handleAllMessages(User author, Message message, MessageChannel channel) {
 
         if (author.isBot()) return;
 
         eventAuthor = author;
 
-        String[] content = message2.getContentRaw().split(" ");
+        String[] content = message.getContentRaw().split(" ");
         String commandWithPrefix = content[0];
 
         if(commandWithPrefix.startsWith(prefix)) {
             final String command = commandWithPrefix.toLowerCase(Locale.ROOT).replace(prefix, "");
-            if(ignoreNameList.contains(message2.getAuthor().getName())) { //ignores User in list
-                sendMessage("Mit dir rede ich nicht\nMimimimimimimimimi", channel2);
+            if(ignoreNameList.contains(message.getAuthor().getName())) { //ignores User in list
+                sendMessage("Mit dir rede ich nicht\nMimimimimimimimimi", channel);
                 return;
             }
 
@@ -326,7 +306,7 @@ public class Bot extends ListenerAdapter implements Subject {
                     .get(0);
 
             try {
-                registerEntry.getMethod().invoke(registerEntry.getService(), content, channel2);
+                registerEntry.getMethod().invoke(registerEntry.getService(), content, channel);
             } catch (IllegalAccessException | InvocationTargetException e) {
                 e.printStackTrace();
             }
