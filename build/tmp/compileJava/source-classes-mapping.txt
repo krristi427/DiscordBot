@@ -1,15 +1,11 @@
-services/roll/RollService.java
- services.roll.RollService
- services.roll.RollService$MassageNotFoundException
- services.roll.RollService$WrongNumberOfRollsException
+services/plotting/PlottingServiceWrapper.java
+ services.plotting.PlottingServiceWrapper
 services/audio/TrackScheduler.java
  services.audio.TrackScheduler
-services/greeting/GreetingsStorageService.java
- services.greeting.GreetingsStorageService
- services.greeting.GreetingsStorageService$1
-dataObjects/Poll.java
- dataObjects.Poll
- dataObjects.Poll$Pollingtypes
+services/commands/CommandsService.java
+ services.commands.CommandsService
+services/greeting/GreetingServiceWrapper.java
+ services.greeting.GreetingServiceWrapper
 services/reactionHandelingService/ReactionHandelingService.java
  services.reactionHandelingService.ReactionHandelingService
 dataObjects/AuthorisationPair.java
@@ -23,8 +19,8 @@ dataObjects/Greeting.java
  dataObjects.Greeting
 dataObjects/Command.java
  dataObjects.Command
-services/Subject.java
- services.Subject
+services/greeting/GreetingService.java
+ services.greeting.GreetingService
 dataObjects/Possibility.java
  dataObjects.Possibility
 services/audio/AudioPlayerSendHandler.java
@@ -33,45 +29,49 @@ services/Wrapper.java
  services.Wrapper
 services/quiz/QuizService.java
  services.quiz.QuizService
-services/audio/GuildMusicManager.java
- services.audio.GuildMusicManager
+bot/Bot.java
+ bot.Bot
+ bot.Bot$States
 services/poll/PollingService.java
  services.poll.PollingService
  services.poll.PollingService$WrongPollingTypException
  services.poll.PollingService$WrongValueException
-dataObjects/ReactionRollEvent.java
- dataObjects.ReactionRollEvent
 services/Service.java
  services.Service
-services/plotting/PlottingServiceWrapper.java
- services.plotting.PlottingServiceWrapper
-services/commands/CommandsService.java
- services.commands.CommandsService
 dataObjects/RegisterEntry.java
  dataObjects.RegisterEntry
 services/joke/JokeService.java
  services.joke.JokeService
  services.joke.JokeService$1
  services.joke.JokeService$2
-services/greeting/GreetingServiceWrapper.java
- services.greeting.GreetingServiceWrapper
+services/roll/RollService.java
+ services.roll.RollService
+ services.roll.RollService$MassageNotFoundException
+ services.roll.RollService$WrongNumberOfRollsException
+services/greeting/GreetingsStorageService.java
+ services.greeting.GreetingsStorageService
+ services.greeting.GreetingsStorageService$1
 services/plotting/PlottingService.java
  services.plotting.PlottingService
  services.plotting.PlottingService$PythonError
-services/greeting/GreetingService.java
- services.greeting.GreetingService
+dataObjects/Poll.java
+ dataObjects.Poll
+ dataObjects.Poll$Pollingtypes
+services/Subject.java
+ services.Subject
+services/audio/GuildMusicManager.java
+ services.audio.GuildMusicManager
 services/audio/SoundServiceWrapper.java
  services.audio.SoundServiceWrapper
 services/commands/CommandsStorageService.java
  services.commands.CommandsStorageService
  services.commands.CommandsStorageService$1
+dataObjects/ReactionRollEvent.java
+ dataObjects.ReactionRollEvent
 services/audio/SoundService.java
  services.audio.SoundService
  services.audio.SoundService$1
 services/commands/CommandsServiceWrapper.java
  services.commands.CommandsServiceWrapper
-bot/Bot.java
- bot.Bot
- bot.Bot$States
 services/joke/JokeServiceWrapper.java
  services.joke.JokeServiceWrapper
