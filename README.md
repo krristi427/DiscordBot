@@ -70,6 +70,6 @@ Contributions are what make the open source community such an amazing place to b
 [stars-url]: https://github.com/krristi427/DiscordBot/stargazers
 
 [issues-shield]: https://img.shields.io/github/issues/krristi427/DiscordBot
-[issues-url]: hhttps://github.com/krristi427/DiscordBot/graphs/contributors
+[issues-url]: https://github.com/krristi427/DiscordBot/issues
 
 [product-screenshot]: img/helloWorld.png
