@@ -44,7 +44,7 @@ Here we will explain how to get this Bot up and running.
    git clone https://github.com/krristi427/DiscordBot.git your_directory
    ```
    
-2. Create a new Application under ```https://discord.com/developers/applications```. Copy the token from there
+2. Create a new Application [here](https://discord.com/developers/applications). Copy the token from there
 3. Open ```resources/config.properties``` and replace the token there with one of your own. 
 4. Run the Application
 
