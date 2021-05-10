@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.TextChannel;
 import services.Wrapper;
 
+import java.io.File;
 import java.util.concurrent.ExecutionException;
 
 public class SoundServiceWrapper extends SoundService implements Wrapper {
@@ -21,8 +22,22 @@ public class SoundServiceWrapper extends SoundService implements Wrapper {
     public void play(String[] content, MessageChannel channel) throws ExecutionException, InterruptedException {
         setId(bot.eventAuthor.getId());
 
+        File file = new File(content[1]);
+
+        //if the file is a directory, traverse the hell out of it,
+        // while adding to the queue every file in your way
+        if (file.isDirectory()) {
+
+            playFolder(content[1], (TextChannel) channel);
+            bot.sendInfoMessage("Conceiled File-names due to confidentiality", channel);
+            return;
+        }
+
         String result = loadAndPlay((TextChannel) channel, content[1]).get();
-        bot.sendInfoMessage(result, channel);
+
+        if (!result.isEmpty()) {
+            bot.sendInfoMessage(result, channel);
+        }
     }
 
     public void pause(String[] content, MessageChannel channel) throws ExecutionException, InterruptedException {

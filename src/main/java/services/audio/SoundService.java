@@ -15,9 +15,13 @@ import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.managers.AudioManager;
 import services.Service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
 
 public abstract class SoundService extends Service {
 
@@ -99,6 +103,19 @@ public abstract class SoundService extends Service {
     private void play(Guild guild, GuildMusicManager musicManager, AudioTrack track) {
         connectToVoiceChannel(guild.getAudioManager());
         musicManager.scheduler.queue(track);
+    }
+
+    protected void playFolder(String path, TextChannel textChannel) {
+
+        try (Stream<Path> walk = Files.walk(Path.of(path))){
+
+            walk.filter(Files::isRegularFile)
+                    .map(Path::toString)
+                    .forEach(s -> loadAndPlay(textChannel, s));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public CompletableFuture<String> pauseTrack(TextChannel channel) {
