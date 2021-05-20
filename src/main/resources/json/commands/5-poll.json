@@ -1,0 +1,13 @@
+[{
+  "name": "startPoll",
+  "explanation": "Starts a poll. There are 3 polling types (public, private and Quick)give one of them as first argument. Then give all possible options for this poll as single arguments to the function."
+}, {
+  "name": "poll",
+  "explanation": "give your vote for the active poll. You can ether pick the number of the option or the name of it as argument"
+}, {
+  "name": "activePoll",
+  "explanation": "shows or changes active poll. If you use function without argument it will show the active poll. To change the active poll give poll id as argument (every poll has his id in the title-line)."
+}, {
+  "name": "endPoll",
+  "explanation": "ends the active poll and prepares the data for plotting"
+}]

@@ -1,0 +1,7 @@
+[{
+  "name": "startBuzzer",
+  "explanation": "Starts a small game. The winner is the first to buzz"
+}, {
+  "name": "buzz",
+  "explanation": "Play with friends and see who is the first to buzz"
+}]

@@ -1,0 +1,22 @@
+[{
+  "name": "play",
+  "explanation": "Needs a Link to the media you want to play"
+}, {
+  "name": "pause",
+  "explanation": "pauses a track"
+}, {
+  "name": "resume",
+  "explanation": "Restarts a paused track"
+}, {
+  "name": "stop",
+  "explanation": "Stops everything and clears the queue"
+}, {
+  "name": "currentQueue",
+  "explanation": "Prints out the current queue of tracks"
+}, {
+  "name": "volume",
+  "explanation": "adjust the volume of the track. If you want to make it quieter just input a negative number ;)"
+}, {
+  "name": "exit",
+  "explanation": "Gracefully leaves the voice channel"
+}]

@@ -1,0 +1,10 @@
+[{
+  "name": "plotUglyDiagram",
+  "explanation": "Plots an ugly diagram. (Old command. Will be removed in later versions)"
+}, {
+  "name": "plotDiagram",
+  "explanation": "Plots the results of a poll in a readable manner. There are 3 plotting types (raw, bar and pie), give one of them as an argument."
+}, {
+  "name": "inputData",
+  "explanation": "is used for manually inputting data for plotting. Inputs need to be separate by :  (f.e.: A:3)"
+}]

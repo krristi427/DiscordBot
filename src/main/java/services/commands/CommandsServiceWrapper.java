@@ -1,7 +1,11 @@
 package services.commands;
 
+import com.github.ygimenez.method.Pages;
+import com.github.ygimenez.model.Page;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import services.Wrapper;
+
+import java.util.HashMap;
 
 public class CommandsServiceWrapper extends CommandsService implements Wrapper {
 
@@ -15,7 +19,9 @@ public class CommandsServiceWrapper extends CommandsService implements Wrapper {
     }
 
     public void help(String[] content, MessageChannel channel) {
-        String buffer = helpRequired(channel, bot.getPrefix());
-        bot.sendMessage(buffer,"Help",0xff8800, channel);
+        HashMap<String, Page> pages = helpRequired(channel, bot.getPrefix());
+
+        channel.sendMessage("Did I hear Help? Click one of the emotes there :D").queue(success -> Pages.categorize(success, pages));
+
     }
 }

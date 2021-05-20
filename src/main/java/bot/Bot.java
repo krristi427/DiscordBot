@@ -1,5 +1,8 @@
 package bot;
 
+import com.github.ygimenez.exception.InvalidHandlerException;
+import com.github.ygimenez.method.Pages;
+import com.github.ygimenez.model.PaginatorBuilder;
 import dataObjects.RegisterEntry;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -152,19 +155,26 @@ public class Bot extends ListenerAdapter implements Subject {
         JDA build = jdaBuilder.build();
 
         Bot b = getInstance();
+
+        //this must be here tho
+        try {
+            Pages.activate(PaginatorBuilder.createSimplePaginator(build));
+        } catch (InvalidHandlerException e) {
+            e.printStackTrace();
+        }
+
         build.addEventListener(b);
         jdaBuilder.setActivity(Activity.playing("type "+ Bot.prefix +"help to get help"));
         b.fillObservers();
 
         wakeUp();
-
     }
 
     public String getPrefix(){
         return prefix;
     }
 
-    public void sendMessage(String message, String title,  int color, MessageChannel channel) //sends a costume Message
+    public void sendMessage(String message, String title,  int color, MessageChannel channel) //sends a custom Message
     {
         EmbedBuilder info = new EmbedBuilder();
         info.setTitle(title);

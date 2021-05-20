@@ -1,0 +1,13 @@
+[{
+  "name": "help",
+  "explanation": "This is used to get a List of all possible commands (you see them right now)"
+}, {
+  "name": "helloThere",
+  "explanation": "Used to greet the Bot...if it's nice to you, it likes you"
+}, {
+  "name": "createGreeting",
+  "explanation": "If you don't like what the bot has, you can add a new one. Make sure to provide a parameter"
+}, {
+  "name": "joke",
+  "explanation": "returns a chuck-norris joke. If you's like something more specific, try providing a parameter"
+}]

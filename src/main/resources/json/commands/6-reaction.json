@@ -1,0 +1,7 @@
+[{
+  "name": "startNumberedReactionRolls or snrr",
+  "explanation": "creates a new Message with Reactions (Nummber from 1 to 10) you can click on to get the roll with the specified name. Give the roll names as arguments (exact name pls). Only 10 rolls can be given (if you need mor use srr)"
+}, {
+  "name": "startReactionRolls or srr",
+  "explanation": "creates a new Message with costume Reactions you can click on to get the roll with the specified name. Give the roll names and emojis as arguments (exact name pls. Emojis must be in Unicode! Not Discords format(:test:)!). Please give Rolls and Emojis as Tuppel. F.e: roll9:9⃣ "
+}]
