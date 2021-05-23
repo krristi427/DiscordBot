@@ -15,10 +15,11 @@ to setting timers, making polls and even joining you on a voice channel.
 
 ### Built With
 
-The Main Libraries we used for this Application are: 
+The Main Libraries and APIs we used for this Application are: 
 * [JDA](https://github.com/DV8FromTheWorld/JDA)
 * [LavaPlayer](https://github.com/sedmelluq/lavaplayer)
 * [Reflections](https://github.com/ronmamo/reflections)
+* [Dad jokes](https://rapidapi.com/KegenGuyll/api/dad-jokes/details)
 
 
 ## Getting Started
@@ -37,6 +38,10 @@ Here we will explain how to get this Bot up and running.
 
     Logically, you will also need a discord account in order to run your bot 
 
+* _API key_
+    
+    The used API needs a key to be functional. You can subscribe for free: this allows 50 requests per day. 
+
 ### Installation
 
 1. Clone the repo
@@ -46,7 +51,8 @@ Here we will explain how to get this Bot up and running.
    
 2. Create a new Application [here](https://discord.com/developers/applications). Copy the token from there
 3. Open ```resources/config.properties``` and replace the token there with one of your own. 
-4. Run the Application
+4. Replace the contents of the variable jokeApiKey with the key provided from the api.  
+5. Run the Application
 
 Bear in mind that the prefix is ```%```. You can change that in the same file, just watch out that the new prefix 
 doesn't match the prefix of another bot on your server. 
