@@ -183,6 +183,16 @@ public class Bot extends ListenerAdapter implements Subject {
         channel.sendMessage(info.build()).queue();
     }
 
+    public void sendMessage(String message, String title, String imageUrl, MessageChannel channel) //message with image
+    {
+        EmbedBuilder info = new EmbedBuilder();
+        info.setTitle(title);
+        info.setColor(standardMessageColour);
+        info.setDescription(message);
+        info.setImage(imageUrl);
+        channel.sendMessage(info.build()).queue();
+    }
+
     public void sendMessage(String message, String title, MessageChannel channel)
     {
         EmbedBuilder info = new EmbedBuilder();

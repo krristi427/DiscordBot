@@ -14,8 +14,6 @@ public class JokeServiceWrapper extends JokeService implements Wrapper {
         super();
     }
 
-    //TODO add check for prefix
-    //TODO unify the calls for sending messages in the channels
     public void joke(String[] content, MessageChannel channel) throws InterruptedException, ExecutionException {
         String message;
         if (content.length>1) {
@@ -24,7 +22,7 @@ public class JokeServiceWrapper extends JokeService implements Wrapper {
             message = getJoke().get();
         }
         if(!message.equals("")) {
-            bot.sendMessage(message, channel);
+            bot.sendMessage(message, "**Dead Jokes**", channel);
         }
     }
 }
