@@ -8,6 +8,9 @@
   "name": "resume",
   "explanation": "Restarts a paused track"
 }, {
+  "name": "skip",
+  "explanation": "skip the currently playing track and continue to the next in the queue"
+}, {
   "name": "stop",
   "explanation": "Stops everything and clears the queue"
 }, {

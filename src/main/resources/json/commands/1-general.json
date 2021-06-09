@@ -10,4 +10,7 @@
 }, {
   "name": "joke",
   "explanation": "returns a chuck-norris joke. If you's like something more specific, try providing a parameter"
+}, {
+  "name": "setTimer",
+  "explanation": "just as the name suggests. Please use in format xx:xx{s, m or h}.\nNote that only 1 of the chars inside the {} must be given. For example 4:30h will be interpreted as 4h and 30min"
 }]
