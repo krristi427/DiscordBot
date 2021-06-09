@@ -27,6 +27,7 @@ public class TimerServiceWrapper extends TimerService implements Wrapper {
         char unit = delayContent.charAt(delayContent.length() - 1);
         delayContent = delayContent.substring(0, delayContent.length() - 1);
 
+        //the multiplication with 1000 is due to the normal delay given in ms
         return switch (unit) {
             case 's' -> getDelayValue(delayContent, 1000);
             case 'm' -> getDelayValue(delayContent, 60 * 1000);
