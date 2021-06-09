@@ -5,7 +5,6 @@ import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import net.dv8tion.jda.api.entities.TextChannel;
-
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -28,7 +27,10 @@ public class TrackScheduler extends AudioEventAdapter {
 
 
     public void nextTrack() {
-        player.startTrack(queue.poll(), true);
+
+        //noInterrupt should be false, as this method is also used for skipping, in which case
+        // you DO want to interrupt the current track
+        player.startTrack(queue.poll(), false);
     }
 
     @Override

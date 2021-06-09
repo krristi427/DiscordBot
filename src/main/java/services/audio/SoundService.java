@@ -8,13 +8,13 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.managers.AudioManager;
 import services.Service;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 
 public abstract class SoundService extends Service {
 
-    //TODO chances to jump to a specific place in the queue/skip songs
+    //TODO chances to jump to a specific place in the queue
 
     private final AudioPlayerManager playerManager;
     private final Map<Long, GuildMusicManager> musicManagers;
@@ -92,6 +92,7 @@ public abstract class SoundService extends Service {
 
             @Override
             public void loadFailed(FriendlyException exception) {
+                exception.printStackTrace();
                 channelFeedback = "Could not play: " + exception.getMessage();
                 completableFuture.complete(channelFeedback);
             }
@@ -203,7 +204,21 @@ public abstract class SoundService extends Service {
         player.setVolume(playerVolume + newVolume);
     }
 
+    public String skip(TextChannel channel) {
+
+        //just get the current track and stop the boi
+        GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
+        AudioPlayer player = musicManager.player;
+        AudioTrackInfo currentTrackInfo = player.getPlayingTrack().getInfo();
+        String trackInfo = currentTrackInfo.author + "-" + currentTrackInfo.title;
+
+        //and just move on to the next track:
+        musicManager.scheduler.nextTrack();
+        return "I just yeeted this kid: " + trackInfo;
+    }
+
     public void exitChannel(TextChannel channel) {
+        stopPlaying(channel);
         channel.getGuild().getAudioManager().closeAudioConnection();
     }
 
