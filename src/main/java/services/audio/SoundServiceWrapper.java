@@ -65,12 +65,19 @@ public class SoundServiceWrapper extends SoundService implements Wrapper {
     }
 
     public void skip(String[] content, MessageChannel channel) {
-        String result = skip((TextChannel) channel);
+
+        String result;
+
+        if (content.length < 2) {
+            result = skip((TextChannel) channel);
+        } else {
+            result = skip((TextChannel) channel, Integer.parseInt(content[1]));
+        }
         bot.sendInfoMessage(result, channel);
     }
 
     public void currentqueue(String[] content, MessageChannel channel) {
-        currentQueue((TextChannel) channel);
+        bot.sendInfoMessage(currentQueue((TextChannel) channel), channel);
     }
 
     public void volume(String[] content, MessageChannel channel) {

@@ -25,7 +25,8 @@ import java.util.stream.Stream;
 
 public abstract class SoundService extends Service {
 
-    //TODO chances to jump to a specific place in the queue
+    //TODO make bot leave channel after queue empty
+    //TODO remove the yeet message if the offset is too big
 
     private final AudioPlayerManager playerManager;
     private final Map<Long, GuildMusicManager> musicManagers;
@@ -168,9 +169,9 @@ public abstract class SoundService extends Service {
         return "Playback has been completely stopped and the queue has been cleared.";
     }
 
-    public void currentQueue(TextChannel channel) {
+    public String currentQueue(TextChannel channel) {
         GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
-        musicManager.scheduler.printQueue(channel);
+        return musicManager.scheduler.printQueue();
     }
 
     private void connectToVoiceChannel(AudioManager audioManager) {
@@ -215,6 +216,12 @@ public abstract class SoundService extends Service {
         //and just move on to the next track:
         musicManager.scheduler.nextTrack();
         return "I just yeeted this kid: " + trackInfo;
+    }
+
+    public String skip(TextChannel channel, int offset) {
+
+        GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
+        return musicManager.scheduler.nextTrack(offset) ? "I just yeeted " + offset + " kids": "That's too big of an offset larry";
     }
 
     public void exitChannel(TextChannel channel) {
