@@ -104,7 +104,7 @@ public abstract class SoundService extends Service {
 
     private void play(Guild guild, GuildMusicManager musicManager, AudioTrack track) {
         connectToVoiceChannel(guild.getAudioManager());
-        musicManager.scheduler.queue(track);
+        musicManager.getScheduler().queue(track);
     }
 
     protected void playFolder(String path, TextChannel textChannel) {
@@ -125,7 +125,7 @@ public abstract class SoundService extends Service {
         completableFuture = new CompletableFuture<>();
 
         GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
-        AudioPlayer player = musicManager.player;
+        AudioPlayer player = musicManager.getPlayer();
 
         if (player.getPlayingTrack() == null) {
             channelFeedback = "Cannot pause or resume player because no track is loaded for playing.";
@@ -135,21 +135,15 @@ public abstract class SoundService extends Service {
 
         player.setPaused(!player.isPaused());
 
-        if (player.isPaused()) {
-            channelFeedback = "The player has been paused.";
-            completableFuture.complete(channelFeedback);
-        }
-        else {
-            channelFeedback = "The player has resumed playing.";
-            completableFuture.complete(channelFeedback);
-        }
+        channelFeedback = player.isPaused() ? "The player has been paused." : "The player has resumed playing.";
+        completableFuture.complete(channelFeedback);
         return completableFuture;
     }
 
     public String resumeTrack(TextChannel channel) {
 
         GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
-        AudioPlayer player = musicManager.player;
+        AudioPlayer player = musicManager.getPlayer();
         AudioTrack playingTrack = player.getPlayingTrack();
 
         player.setPaused(!player.isPaused());
@@ -160,9 +154,9 @@ public abstract class SoundService extends Service {
     public String stopPlaying(TextChannel channel) {
 
         GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
-        AudioPlayer player = musicManager.player;
+        AudioPlayer player = musicManager.getPlayer();
 
-        musicManager.scheduler.queue.clear();
+        musicManager.getScheduler().getQueue().clear();
         player.stopTrack();
         player.setPaused(false);
         channel.getGuild().getAudioManager().closeAudioConnection();
@@ -171,7 +165,7 @@ public abstract class SoundService extends Service {
 
     public String currentQueue(TextChannel channel) {
         GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
-        return musicManager.scheduler.printQueue();
+        return musicManager.getScheduler().printQueue();
     }
 
     private void connectToVoiceChannel(AudioManager audioManager) {
@@ -200,7 +194,7 @@ public abstract class SoundService extends Service {
     public void changeVolume(TextChannel channel, int newVolume) {
 
         GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
-        AudioPlayer player = musicManager.player;
+        AudioPlayer player = musicManager.getPlayer();
         int playerVolume = player.getVolume();
         player.setVolume(playerVolume + newVolume);
     }
@@ -209,19 +203,19 @@ public abstract class SoundService extends Service {
 
         //just get the current track and stop the boi
         GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
-        AudioPlayer player = musicManager.player;
+        AudioPlayer player = musicManager.getPlayer();
         AudioTrackInfo currentTrackInfo = player.getPlayingTrack().getInfo();
         String trackInfo = currentTrackInfo.author + "-" + currentTrackInfo.title;
 
         //and just move on to the next track:
-        musicManager.scheduler.nextTrack();
+        musicManager.getScheduler().nextTrack();
         return "I just yeeted this kid: " + trackInfo;
     }
 
     public String skip(TextChannel channel, int offset) {
 
         GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
-        return musicManager.scheduler.nextTrack(offset) ? "I just yeeted " + offset + " kids": "That's too big of an offset larry";
+        return musicManager.getScheduler().nextTrack(offset) ? "I just yeeted " + offset + " kids": "That's too big of an offset larry";
     }
 
     public void exitChannel(TextChannel channel) {

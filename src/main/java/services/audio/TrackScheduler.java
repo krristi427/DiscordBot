@@ -11,7 +11,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class TrackScheduler extends AudioEventAdapter {
 
+    @Getter
     private final AudioPlayer player;
+
+    @Getter
     final BlockingQueue<AudioTrack> queue;
 
     public TrackScheduler(AudioPlayer player) {
