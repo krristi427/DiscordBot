@@ -26,7 +26,6 @@ import java.util.stream.Stream;
 public abstract class SoundService extends Service {
 
     //TODO make bot leave channel after queue empty
-    //TODO remove the yeet message if the offset is too big
 
     private final AudioPlayerManager playerManager;
     private final Map<Long, GuildMusicManager> musicManagers;

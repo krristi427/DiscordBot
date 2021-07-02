@@ -11,6 +11,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class TrackScheduler extends AudioEventAdapter {
 
+    //TODO make full use of the methods from AudioEventAdapter
+
     @Getter
     private final AudioPlayer player;
 
