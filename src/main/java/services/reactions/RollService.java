@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Optional;
 
 public class RollService {
 
@@ -77,44 +78,46 @@ public class RollService {
 
     private String getMatchingRoll(String emoji, String messageId) throws MassageNotFoundException {
 
-        String eventID = messageId;
+        int i = 0;
 
-        //find the event from ReactionRollEvent with given ID
-        int i;
-        boolean found = false;
-        for (i=0;i<events.size();i++) {
-
-            if (events.get(i).getId().equals(eventID))
-            {
-                found = true;
-                break;
-            }
-
+        //get the ID and make sure it is available..it could also be null, which means it wasn't found
+        Optional<Integer> eventWithID = Optional.ofNullable(findEventWithID(messageId));
+        if (eventWithID.isPresent()) {
+            i = eventWithID.get();
         }
-        if(i==events.size() && !found) {
-            throw new MassageNotFoundException(eventID,"Message");
-        }
+
         ArrayList<String> rolls = events.get(i).getRolls();
         ArrayList<String> rollEmojis = events.get(i).getRollEmojis();
 
         //BEGIN emojiID
         int j;
-        found = false;
-        for (j = 0; j < rollEmojis.size(); j++)
-        {
-            if(rollEmojis.get(j).equals(emoji))
-            {
-                found = true;
+        for (j = 0; j < rollEmojis.size(); j++) {
+            if(rollEmojis.get(j).equals(emoji)) {
                 break;
             }
 
         }
 
         //it must be i, but found has now changed
-        if(i==events.size() && !found) {
-            throw new MassageNotFoundException(emoji,"Emoji");
+        if(i == events.size()) {
+            throw new MassageNotFoundException(emoji, "Emoji");
         }
         return rolls.get(j);
+    }
+
+    private Integer findEventWithID(String eventID) throws MassageNotFoundException {
+
+        for (int i = 0; i < events.size(); i++) {
+
+            if (events.get(i).getId().equals(eventID)) {
+                return i;
+            }
+
+            if(i==events.size()) {
+                throw new MassageNotFoundException(eventID, "Message");
+            }
+        }
+        return null;
     }
 
     public class WrongNumberOfRollsException extends Exception
