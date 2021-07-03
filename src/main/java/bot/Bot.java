@@ -23,8 +23,8 @@ import services.Observer;
 import services.Subject;
 import services.Wrapper;
 import services.poll.PollingService;
-import services.reactionHandelingService.ReactionHandelingService;
-import services.roll.RollService;
+import services.reactions.ReactionHandelingService;
+import services.reactions.RollService;
 
 import javax.annotation.Nonnull;
 import javax.security.auth.login.LoginException;

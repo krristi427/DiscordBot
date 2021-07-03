@@ -1,4 +1,4 @@
-package services.roll;
+package services.reactions;
 
 import dataObjects.ReactionRollEvent;
 import net.dv8tion.jda.api.entities.MessageChannel;
@@ -9,13 +9,14 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class RollService{
+public class RollService {
 
     ArrayList<ReactionRollEvent> events = new ArrayList<>();
     private static final RollService instance = new RollService();
     public static RollService getInstance() {
         return instance;
     }
+
     public void roll( @NotNull MessageChannel channel)
     {
         channel.sendMessage("https://www.youtube.com/watch?v=2ocykBzWDiM&feature=emb_title").queue();
@@ -30,6 +31,7 @@ public class RollService{
         event.printEvent(channel);
     }
 
+    //TODO wouldn't it be more efficient if there were a list of rollEmojis and depending on the input you make your arraylist be a sub of it
     public void startNumberedReactionRollEvent( @NotNull ArrayList<String> rolls, String name, String authorsName, MessageChannel channel) throws WrongNumberOfRollsException {
         if(rolls.size()>10||rolls.size()<1)
             throw new WrongNumberOfRollsException("rolls.size: "+rolls.size()+" was unexpected");
@@ -61,18 +63,23 @@ public class RollService{
         startPersonalReactionRollEvent(rolls,rollEmojis, authorsName, name, channel);
     }
 
-    public void getRoll(String emoji, MessageReactionAddEvent event) throws MassageNotFoundException {
+    public void getRole(String emoji, MessageReactionAddEvent event) throws MassageNotFoundException {
         String roll = getMatchingRoll(emoji, event.getMessageId());
+
+        //the role must be available!
         event.getGuild().addRoleToMember(event.getUserId(), event.getGuild().getRolesByName(roll,true).get(0)).queue();
     }
 
-    public void loseRoll(String emoji, MessageReactionRemoveEvent event) throws MassageNotFoundException {
+    public void loseRole(String emoji, MessageReactionRemoveEvent event) throws MassageNotFoundException {
         String roll = getMatchingRoll(emoji, event.getMessageId());
         event.getGuild().removeRoleFromMember(event.getUserId(), event.getGuild().getRolesByName(roll,true).get(0)).queue();
     }
 
     private String getMatchingRoll(String emoji, String messageId) throws MassageNotFoundException {
+
         String eventID = messageId;
+
+        //find the event from ReactionRollEvent with given ID
         int i;
         boolean found = false;
         for (i=0;i<events.size();i++) {
@@ -89,24 +96,26 @@ public class RollService{
         }
         ArrayList<String> rolls = events.get(i).getRolls();
         ArrayList<String> rollEmojis = events.get(i).getRollEmojis();
+
+        //BEGIN emojiID
         int j;
         found = false;
-        for (j=0;j< events.size();j++)
+        for (j = 0; j < rollEmojis.size(); j++)
         {
-            if(rollEmojis.get(i).equals(emoji))
+            if(rollEmojis.get(j).equals(emoji))
             {
                 found = true;
                 break;
             }
 
         }
+
+        //it must be i, but found has now changed
         if(i==events.size() && !found) {
             throw new MassageNotFoundException(emoji,"Emoji");
         }
         return rolls.get(j);
-
     }
-
 
     public class WrongNumberOfRollsException extends Exception
     {

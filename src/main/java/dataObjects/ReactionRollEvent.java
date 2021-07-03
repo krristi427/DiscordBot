@@ -58,7 +58,10 @@ public class ReactionRollEvent {
         for (int i=0; i<rolls.size(); i++)
             content+="Drücke "+rollEmojis.get(i)+" um der Rolle "+rolls.get(i)+" zugewiesen zu werden.\n";
         info.setDescription(content);
-        info.setAuthor("Ersteller: "+authorsName);
+
+        //TODO just remove ersteller
+        info.setAuthor("Ersteller: " + authorsName);
+
         channel.sendMessage(info.build()).queue((message) -> {
             for (int i=0; i<rolls.size(); i++)
                 message.addReaction(rollEmojis.get(i)).queue();
@@ -66,6 +69,7 @@ public class ReactionRollEvent {
 
         });
 
+        //TODO leerzeichen hier entfernen
 
 
     }
