@@ -6,9 +6,9 @@ import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class RollService {
 
@@ -24,44 +24,51 @@ public class RollService {
         //well yes it dose whats intended to do.
     }
 
-    public void startPersonalReactionRollEvent( @NotNull ArrayList<String> rolls, ArrayList<String> rollEmojis, String authorsName, String name, MessageChannel channel) throws WrongNumberOfRollsException {
-        if(rolls.size()!=rollEmojis.size()||rolls.size()<1)
-            throw new WrongNumberOfRollsException("rolls.size: "+rolls.size()+" or rollEmojis.size: "+rollEmojis.size()+" was unexpected");
-        ReactionRollEvent event = new ReactionRollEvent(rolls,rollEmojis,name,authorsName);
+    public void startPersonalReactionRollEvent(@NotNull LinkedHashMap<String, String> roleToEmoji, String name, MessageChannel channel) throws WrongNumberOfRollsException {
+
+        if(roleToEmoji.size() < 1) {
+            throw new WrongNumberOfRollsException("roleToEmoji.size: " + roleToEmoji.size() + " was unexpected");
+        }
+
+        ReactionRollEvent event = new ReactionRollEvent(roleToEmoji, name);
         events.add(event);
         event.printEvent(channel);
     }
 
-    //TODO wouldn't it be more efficient if there were a list of rollEmojis and depending on the input you make your arraylist be a sub of it
-    public void startNumberedReactionRollEvent( @NotNull ArrayList<String> rolls, String name, String authorsName, MessageChannel channel) throws WrongNumberOfRollsException {
-        if(rolls.size()>10||rolls.size()<1)
+    public void startNumberedReactionRollEvent( @NotNull ArrayList<String> rolls, String name, MessageChannel channel) throws WrongNumberOfRollsException {
+        if(rolls.size() > 10 || rolls.size() < 1) {
             throw new WrongNumberOfRollsException("rolls.size: "+rolls.size()+" was unexpected");
-        ArrayList<String> rollEmojis = new ArrayList<>();
-        switch (rolls.size())
-        {
+        }
+
+        //max of 8, then grow since 6 elements. Statistically, 8 is more likely to get chosen ;)
+        LinkedHashMap<String, String> roleToEmoji = new LinkedHashMap<>(8, 0.75f);
+
+        switch (rolls.size()) {
             case (10):
-                rollEmojis.add("\uD83D\uDD1F");
+                roleToEmoji.put(rolls.get(9), "\uD83D\uDD1F");
             case (9):
-                rollEmojis.add("9⃣");
+                roleToEmoji.put(rolls.get(8), "9⃣");
             case(8):
-                rollEmojis.add("8⃣");
+                roleToEmoji.put(rolls.get(7), "8⃣");
             case(7):
-                rollEmojis.add("7⃣");
+                roleToEmoji.put(rolls.get(6), "7⃣");
             case(6):
-                rollEmojis.add("6⃣");
+                roleToEmoji.put(rolls.get(5), "6⃣");
             case(5):
-                rollEmojis.add("5⃣");
+                roleToEmoji.put(rolls.get(4), "5⃣");
             case(4):
-                rollEmojis.add("4⃣");
+                roleToEmoji.put(rolls.get(3), "4⃣");
             case(3):
-                rollEmojis.add("3⃣");
+                roleToEmoji.put(rolls.get(2), "3⃣");
             case(2):
-                rollEmojis.add("2️⃣");
+                roleToEmoji.put(rolls.get(1), "2️⃣");
             case(1):
-                rollEmojis.add("1️⃣");
+                roleToEmoji.put(rolls.get(0), "1️⃣");
         } //well yes that's right because of ne breaks;
-        Collections.reverse(rollEmojis);
-        startPersonalReactionRollEvent(rolls,rollEmojis, authorsName, name, channel);
+
+        roleToEmoji = reverseMap(roleToEmoji);
+
+        startPersonalReactionRollEvent(roleToEmoji, name, channel);
     }
 
     public void getRole(String emoji, MessageReactionAddEvent event) throws MassageNotFoundException {
@@ -86,23 +93,17 @@ public class RollService {
             i = eventWithID.get();
         }
 
-        ArrayList<String> rolls = events.get(i).getRolls();
-        ArrayList<String> rollEmojis = events.get(i).getRollEmojis();
+        LinkedHashMap<String, String> roleToEmoji = events.get(i).getRoleToEmoji();
 
-        //BEGIN emojiID
-        int j;
-        for (j = 0; j < rollEmojis.size(); j++) {
-            if(rollEmojis.get(j).equals(emoji)) {
-                break;
-            }
+        Optional<String> foundKey = findKeyForValue(roleToEmoji, emoji);
 
+        String key = "";
+
+        if (foundKey.isPresent()) {
+            key = foundKey.get();
         }
 
-        //it must be i, but found has now changed
-        if(i == events.size()) {
-            throw new MassageNotFoundException(emoji, "Emoji");
-        }
-        return rolls.get(j);
+        return key;
     }
 
     private Integer findEventWithID(String eventID) throws MassageNotFoundException {
@@ -113,11 +114,33 @@ public class RollService {
                 return i;
             }
 
-            if(i==events.size()) {
+            if(i == events.size()) {
                 throw new MassageNotFoundException(eventID, "Message");
             }
         }
         return null;
+    }
+
+    private Optional<String> findKeyForValue(LinkedHashMap<String, String> roleToEmoji, String emoji) {
+
+        return roleToEmoji.entrySet()
+                .stream()
+                .filter(key -> emoji.equals(
+                        key.getValue()))
+                .map(Map.Entry::getKey)
+                .findFirst();
+    }
+
+    private LinkedHashMap<String, String> reverseMap(LinkedHashMap<String, String> roleToEmoji) {
+
+        return roleToEmoji.entrySet()
+                .stream()
+                .sorted(Collections.reverseOrder(Map.Entry.comparingByKey(Comparator.reverseOrder())))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (oldValue, newValue) -> oldValue,
+                        LinkedHashMap::new));
     }
 
     public class WrongNumberOfRollsException extends Exception
@@ -140,5 +163,20 @@ public class RollService {
         }
     }
 }
+
+/*
+
+return roleToEmoji.entrySet()
+                .stream()
+                .sorted(Collections.reverseOrder(
+                        Map.Entry.comparingByKey()))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (oldValue, newValue) -> oldValue,
+                        LinkedHashMap::new));
+
+
+ */
 
 

@@ -1,13 +1,19 @@
+services/reactions/RollService.java
+ services.reactions.RollService
+ services.reactions.RollService$MassageNotFoundException
+ services.reactions.RollService$WrongNumberOfRollsException
 services/plotting/PlottingServiceWrapper.java
  services.plotting.PlottingServiceWrapper
 services/audio/TrackScheduler.java
  services.audio.TrackScheduler
 services/commands/CommandsService.java
  services.commands.CommandsService
+services/timer/TimerServiceWrapper.java
+ services.timer.TimerServiceWrapper
 services/greeting/GreetingServiceWrapper.java
  services.greeting.GreetingServiceWrapper
-services/reactionHandelingService/ReactionHandelingService.java
- services.reactionHandelingService.ReactionHandelingService
+services/reactions/ReactionHandelingService.java
+ services.reactions.ReactionHandelingService
 dataObjects/AuthorisationPair.java
  dataObjects.AuthorisationPair
 services/Observer.java
@@ -29,6 +35,8 @@ services/Wrapper.java
  services.Wrapper
 services/quiz/QuizService.java
  services.quiz.QuizService
+services/reactions/ReactionService.java
+ services.reactions.ReactionService
 bot/Bot.java
  bot.Bot
  bot.Bot$States
@@ -38,16 +46,18 @@ services/poll/PollingService.java
  services.poll.PollingService$WrongValueException
 services/Service.java
  services.Service
+services/timer/TimerService.java
+ services.timer.TimerService
+ services.timer.TimerService$1
 dataObjects/RegisterEntry.java
  dataObjects.RegisterEntry
 services/joke/JokeService.java
  services.joke.JokeService
  services.joke.JokeService$1
  services.joke.JokeService$2
-services/roll/RollService.java
- services.roll.RollService
- services.roll.RollService$MassageNotFoundException
- services.roll.RollService$WrongNumberOfRollsException
+ services.joke.JokeService$3
+services/reactions/ReactionServiceWrapper.java
+ services.reactions.ReactionServiceWrapper
 services/greeting/GreetingsStorageService.java
  services.greeting.GreetingsStorageService
  services.greeting.GreetingsStorageService$1

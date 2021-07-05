@@ -1,35 +1,30 @@
 package dataObjects;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class ReactionRollEvent {
-    private ArrayList<String> rolls;
-    private ArrayList<String> rollEmojis;
+
+    //TODO throw lombok at this stuff
+
     private String eventName;
     private String id;
-    private String authorsName;
 
-    public ReactionRollEvent(ArrayList<String> rolls, ArrayList<String> rollEmojis, String eventName, String authorsName) {
-        this.rolls = rolls;
+    @Getter
+    @Setter
+    private LinkedHashMap<String, String> roleToEmoji;
+
+    public ReactionRollEvent(LinkedHashMap<String, String> roleToEmoji, String eventName) {
+
+        this.roleToEmoji = roleToEmoji;
         this.eventName = eventName;
-        this.rollEmojis = rollEmojis;
-        this.authorsName = authorsName;
-    }
-
-    public ArrayList<String> getRolls() {
-        return rolls;
-    }
-
-    public ArrayList<String> getRollEmojis() {
-        return rollEmojis;
-    }
-
-    public void setRolls(ArrayList<String> rolls) {
-        this.rolls = rolls;
     }
 
     public String getEventName() {
@@ -55,30 +50,39 @@ public class ReactionRollEvent {
         info.setTitle("Wähle deine Rolle für "+eventName+":");
         info.setFooter("Reagiere mit einem Emoji um der entsprechenden Rolle zugewiesen zu werden");
         String content = "";
-        for (int i=0; i<rolls.size(); i++)
-            content+="Drücke "+rollEmojis.get(i)+" um der Rolle "+rolls.get(i)+" zugewiesen zu werden.\n";
+
+        for (Map.Entry<String, String> pair: roleToEmoji.entrySet()) {
+
+            String role = pair.getKey();
+            String emoji = pair.getValue();
+
+            content+="Drücke "+ emoji +" um der Rolle "+ role +" zugewiesen zu werden.\n";
+        }
+
         info.setDescription(content);
 
-        //TODO just remove ersteller
-        info.setAuthor("Ersteller: " + authorsName);
-
         channel.sendMessage(info.build()).queue((message) -> {
-            for (int i=0; i<rolls.size(); i++)
-                message.addReaction(rollEmojis.get(i)).queue();
-                id = message.getId();
 
+            for (Map.Entry<String, String> pair: roleToEmoji.entrySet()) {
+
+                String emoji = pair.getValue();
+                message.addReaction(emoji).queue();
+            }
+            id = message.getId();
         });
 
         //TODO leerzeichen hier entfernen
 
 
+
     }
+
     public void makeEvent(MessageChannel channel){
         long messageId = channel.getLatestMessageIdLong();
-        for (int i=rolls.size()-1; i>=0; i--) {
+        for (int i = roleToEmoji.size() - 1; i >= 0; i--) {
 
             channel.addReactionById(messageId, "\uD83D\uDCA6").queue();
 
-            }
+        }
     }
 }
