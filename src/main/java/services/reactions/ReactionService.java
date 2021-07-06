@@ -18,10 +18,10 @@ public abstract class ReactionService extends Service {
         String message = "";
 
         try {
-            RollService.getInstance().startNumberedReactionRollEvent(roles, content[1], messageChannel);
+            RoleService.getInstance().startNumberedReactionRoleEvent(roles, content[1], messageChannel);
 
-        } catch (RollService.WrongNumberOfRollsException e) {
-            message = "Sorry but its only possible to have 10 different roles for a numbered reaction roll event.\n" + e.value;
+        } catch (RoleService.WrongNumberOfRolesException e) {
+            message = "Sorry but its only possible to have 10 different roles for a numbered reaction role event.\n" + e.value;
         }
 
         return message;

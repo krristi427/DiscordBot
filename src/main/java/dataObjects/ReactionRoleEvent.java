@@ -10,37 +10,24 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class ReactionRollEvent {
+public class ReactionRoleEvent {
 
-    //TODO throw lombok at this stuff
-
+    @Getter
+    @Setter
     private String eventName;
+
+    @Getter
+    @Setter
     private String id;
 
     @Getter
     @Setter
     private LinkedHashMap<String, String> roleToEmoji;
 
-    public ReactionRollEvent(LinkedHashMap<String, String> roleToEmoji, String eventName) {
+    public ReactionRoleEvent(LinkedHashMap<String, String> roleToEmoji, String eventName) {
 
         this.roleToEmoji = roleToEmoji;
         this.eventName = eventName;
-    }
-
-    public String getEventName() {
-        return eventName;
-    }
-
-    public void setEventName(String eventName) {
-        this.eventName = eventName;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public void printEvent(MessageChannel channel){

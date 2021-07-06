@@ -24,7 +24,7 @@ import services.Subject;
 import services.Wrapper;
 import services.poll.PollingService;
 import services.reactions.ReactionHandelingService;
-import services.reactions.RollService;
+import services.reactions.RoleService;
 
 import javax.annotation.Nonnull;
 import javax.security.auth.login.LoginException;
@@ -286,7 +286,7 @@ public class Bot extends ListenerAdapter implements Subject {
         try {
             reactionHandelingService.handleRemove(event);
         }
-        catch (RollService.MassageNotFoundException e){
+        catch (RoleService.MassageNotFoundException e){
             e.printStackTrace();
         }
     }
@@ -299,7 +299,7 @@ public class Bot extends ListenerAdapter implements Subject {
         try {
             reactionHandelingService.handleAdd(event);
         }
-        catch (RollService.MassageNotFoundException e){
+        catch (RoleService.MassageNotFoundException e){
             e.printStackTrace();
         }
     }

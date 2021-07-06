@@ -1,6 +1,6 @@
 package services.reactions;
 
-import dataObjects.ReactionRollEvent;
+import dataObjects.ReactionRoleEvent;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent;
@@ -8,82 +8,81 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-public class RollService {
+public class RoleService {
 
-    ArrayList<ReactionRollEvent> events = new ArrayList<>();
-    private static final RollService instance = new RollService();
-    public static RollService getInstance() {
+    ArrayList<ReactionRoleEvent> events = new ArrayList<>();
+    private static final RoleService instance = new RoleService();
+    public static RoleService getInstance() {
         return instance;
     }
 
     public void roll( @NotNull MessageChannel channel)
     {
         channel.sendMessage("https://www.youtube.com/watch?v=2ocykBzWDiM&feature=emb_title").queue();
-        //well yes it dose whats intended to do.
+        //well yes it does what's intended to do.
     }
 
-    public void startPersonalReactionRollEvent(@NotNull LinkedHashMap<String, String> roleToEmoji, String name, MessageChannel channel) throws WrongNumberOfRollsException {
+    public void startPersonalReactionRoleEvent(@NotNull LinkedHashMap<String, String> roleToEmoji, String name, MessageChannel channel) throws WrongNumberOfRolesException {
 
         if(roleToEmoji.size() < 1) {
-            throw new WrongNumberOfRollsException("roleToEmoji.size: " + roleToEmoji.size() + " was unexpected");
+            throw new WrongNumberOfRolesException("roleToEmoji.size: " + roleToEmoji.size() + " was unexpected");
         }
 
-        ReactionRollEvent event = new ReactionRollEvent(roleToEmoji, name);
+        ReactionRoleEvent event = new ReactionRoleEvent(roleToEmoji, name);
         events.add(event);
         event.printEvent(channel);
     }
 
-    public void startNumberedReactionRollEvent( @NotNull ArrayList<String> rolls, String name, MessageChannel channel) throws WrongNumberOfRollsException {
-        if(rolls.size() > 10 || rolls.size() < 1) {
-            throw new WrongNumberOfRollsException("rolls.size: "+rolls.size()+" was unexpected");
+    public void startNumberedReactionRoleEvent(@NotNull ArrayList<String> roles, String name, MessageChannel channel) throws WrongNumberOfRolesException {
+        if(roles.size() > 10 || roles.size() < 1) {
+            throw new WrongNumberOfRolesException("roles.size: " + roles.size() + " was unexpected");
         }
 
         //max of 8, then grow since 6 elements. Statistically, 8 is more likely to get chosen ;)
         LinkedHashMap<String, String> roleToEmoji = new LinkedHashMap<>(8, 0.75f);
 
-        switch (rolls.size()) {
+        switch (roles.size()) {
             case (10):
-                roleToEmoji.put(rolls.get(9), "\uD83D\uDD1F");
+                roleToEmoji.put(roles.get(9), "\uD83D\uDD1F");
             case (9):
-                roleToEmoji.put(rolls.get(8), "9⃣");
+                roleToEmoji.put(roles.get(8), "9⃣");
             case(8):
-                roleToEmoji.put(rolls.get(7), "8⃣");
+                roleToEmoji.put(roles.get(7), "8⃣");
             case(7):
-                roleToEmoji.put(rolls.get(6), "7⃣");
+                roleToEmoji.put(roles.get(6), "7⃣");
             case(6):
-                roleToEmoji.put(rolls.get(5), "6⃣");
+                roleToEmoji.put(roles.get(5), "6⃣");
             case(5):
-                roleToEmoji.put(rolls.get(4), "5⃣");
+                roleToEmoji.put(roles.get(4), "5⃣");
             case(4):
-                roleToEmoji.put(rolls.get(3), "4⃣");
+                roleToEmoji.put(roles.get(3), "4⃣");
             case(3):
-                roleToEmoji.put(rolls.get(2), "3⃣");
+                roleToEmoji.put(roles.get(2), "3⃣");
             case(2):
-                roleToEmoji.put(rolls.get(1), "2️⃣");
+                roleToEmoji.put(roles.get(1), "2️⃣");
             case(1):
-                roleToEmoji.put(rolls.get(0), "1️⃣");
+                roleToEmoji.put(roles.get(0), "1️⃣");
         } //well yes that's right because of ne breaks;
 
         roleToEmoji = reverseMap(roleToEmoji);
 
-        startPersonalReactionRollEvent(roleToEmoji, name, channel);
+        startPersonalReactionRoleEvent(roleToEmoji, name, channel);
     }
 
     public void getRole(String emoji, MessageReactionAddEvent event) throws MassageNotFoundException {
-        String roll = getMatchingRoll(emoji, event.getMessageId());
+        String role = getMatchingRole(emoji, event.getMessageId());
 
         //the role must be available!
-        event.getGuild().addRoleToMember(event.getUserId(), event.getGuild().getRolesByName(roll,true).get(0)).queue();
+        event.getGuild().addRoleToMember(event.getUserId(), event.getGuild().getRolesByName(role,true).get(0)).queue();
     }
 
     public void loseRole(String emoji, MessageReactionRemoveEvent event) throws MassageNotFoundException {
-        String roll = getMatchingRoll(emoji, event.getMessageId());
-        event.getGuild().removeRoleFromMember(event.getUserId(), event.getGuild().getRolesByName(roll,true).get(0)).queue();
+        String role = getMatchingRole(emoji, event.getMessageId());
+        event.getGuild().removeRoleFromMember(event.getUserId(), event.getGuild().getRolesByName(role,true).get(0)).queue();
     }
 
-    private String getMatchingRoll(String emoji, String messageId) throws MassageNotFoundException {
+    private String getMatchingRole(String emoji, String messageId) throws MassageNotFoundException {
 
         int i = 0;
 
@@ -143,16 +142,16 @@ public class RollService {
                         LinkedHashMap::new));
     }
 
-    public class WrongNumberOfRollsException extends Exception
+    public static class WrongNumberOfRolesException extends Exception
     {
         public String value;
-        WrongNumberOfRollsException(String value)
+        WrongNumberOfRolesException(String value)
         {
             this.value = value;
         }
     }
 
-    public class MassageNotFoundException extends Exception
+    public static class MassageNotFoundException extends Exception
     {
         public String value;
         public String typ;
@@ -163,20 +162,3 @@ public class RollService {
         }
     }
 }
-
-/*
-
-return roleToEmoji.entrySet()
-                .stream()
-                .sorted(Collections.reverseOrder(
-                        Map.Entry.comparingByKey()))
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue,
-                        (oldValue, newValue) -> oldValue,
-                        LinkedHashMap::new));
-
-
- */
-
-
