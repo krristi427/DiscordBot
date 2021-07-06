@@ -34,19 +34,19 @@ public class ReactionRoleEvent {
         EmbedBuilder info = new EmbedBuilder();
         info.setColor(0xdb00ff);
 
-        info.setTitle("Wähle deine Rolle für "+eventName+":");
-        info.setFooter("Reagiere mit einem Emoji um der entsprechenden Rolle zugewiesen zu werden");
-        String content = "";
+        info.setTitle("Choose a Role for " + eventName + ":");
+        info.setFooter("React with an emoji to this message, in order to get the corresponding role");
+        StringBuilder content = new StringBuilder();
 
         for (Map.Entry<String, String> pair: roleToEmoji.entrySet()) {
 
             String role = pair.getKey();
             String emoji = pair.getValue();
 
-            content+="Drücke "+ emoji +" um der Rolle "+ role +" zugewiesen zu werden.\n";
+            content.append("React with: ").append(emoji).append(" in order to get the role: ").append(role).append("\n");
         }
 
-        info.setDescription(content);
+        info.setDescription(content.toString());
 
         channel.sendMessage(info.build()).queue((message) -> {
 
@@ -57,11 +57,6 @@ public class ReactionRoleEvent {
             }
             id = message.getId();
         });
-
-        //TODO leerzeichen hier entfernen
-
-
-
     }
 
     public void makeEvent(MessageChannel channel){
