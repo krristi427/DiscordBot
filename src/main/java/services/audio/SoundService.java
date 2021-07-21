@@ -25,8 +25,6 @@ import java.util.stream.Stream;
 
 public abstract class SoundService extends Service {
 
-    //TODO make bot leave channel after queue empty
-
     private final AudioPlayerManager playerManager;
     private final Map<Long, GuildMusicManager> musicManagers;
     private String id;
